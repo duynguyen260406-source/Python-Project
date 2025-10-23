@@ -124,49 +124,50 @@ if feature.startswith("What-if"):
     st.dataframe(pd.DataFrame(compare_data))
 
 
-# FEATURE 2: CALORIE SWAP 
+# FEATURE 2: CALORIE SWAP
 if feature.startswith("Calorie Swap"):
-    st.header(" Calorie Swap – Convert Food Calories to Workout Time")
-    st.info("Chọn món ăn và số lượng để ước tính thời gian tập cần thiết để đốt bù.")
+    st.header("Calorie Swap – Convert Food Calories to Workout Time")
+    st.info("Select a food item and portion size to estimate the workout time needed to burn it off.")
 
-    # Load local CSV 
+    # Load local CSV
     @st.cache_data
     def load_food_db(csv_path: str):
         df = pd.read_csv(csv_path)
-        # Chuẩn hóa tên để dễ tìm
+        # Normalize names for easier lookup
         df["key"] = df["Food_Name"].str.lower().str.strip()
         return df
 
     food_db = load_food_db("data/food_calories_vi.csv")
 
-    # Chọn từ danh sách có sẵn
-    food_name = st.selectbox("Chọn món:", sorted(food_db["Food_Name"].unique().tolist()))
-    quantity = st.number_input("Số lượng (phần/ly/cái)", min_value=1, max_value=10, value=1, step=1)
+    # Select from available food list
+    food_name = st.selectbox("Choose a food item:", sorted(food_db["Food_Name"].unique().tolist()))
+    quantity = st.number_input("Quantity (servings/cups/pieces)", min_value=1, max_value=10, value=1, step=1)
 
-    # Các thông số tập luyện
+    # Workout parameters
     base_hr = st.slider("Average Heart Rate (bpm)", 90, 180, 130)
-    max_min = st.slider("Max workout duration (minutes)", 10, 180, 90)
+    max_min = st.slider("Maximum Workout Duration (minutes)", 10, 180, 90)
 
-    # Tính calories từ món đã chọn
+    # Calculate total calories for the chosen food
     pick = food_db.loc[food_db["Food_Name"] == food_name].iloc[0]
     kcal_per = float(pick["Calories_per_serving"])
     food_kcal = kcal_per * quantity
 
-    st.write(f"**Tổng năng lượng ước tính:** {food_kcal:.0f} kcal  "
-             f"({quantity} × {food_name} • {pick['Portion']} • {kcal_per:.0f} kcal/phần)")
+    st.write(f"**Estimated total energy:** {food_kcal:.0f} kcal  "
+             f"({quantity} × {food_name} • {pick['Portion']} • {kcal_per:.0f} kcal per serving)")
 
-    # Nút tính thời lượng tập
+    # Calculate required workout duration
     if st.button("Calculate Required Duration"):
         dur, kcal_est, feasible = solve_duration_for_target(
             model, food_kcal, age, sex, height, weight, base_hr, max_min, body_temp
         )
         if feasible:
             st.success(
-                f"Đốt **{food_kcal:.0f} kcal** từ {quantity} × {food_name}: "
-                f"cần **{dur:.1f} phút** ở **{base_hr} bpm**."
+                f"To burn **{food_kcal:.0f} kcal** from {quantity} × {food_name}, "
+                f"you need **{dur:.1f} minutes** at **{base_hr} bpm**."
             )
         else:
             st.warning(
-                f"Trong {max_min} phút chỉ ước tính đốt được ~{kcal_est:.1f} kcal. "
-                "Hãy tăng nhịp tim hoặc thời lượng."
+                f"Within {max_min} minutes, you can only burn approximately ~{kcal_est:.1f} kcal. "
+                "Try increasing your heart rate or workout duration."
             )
+
