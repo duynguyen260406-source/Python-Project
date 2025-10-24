@@ -1,7 +1,3 @@
-import joblib 
-MODEL_PATH = "artifacts/best_calorie_model.pkl"
-model = joblib.load(MODEL_PATH)
-
 import math
 import pandas as pd
 from dataclasses import dataclass

@@ -1,5 +1,5 @@
 import joblib 
-MODEL_PATH = "C:/Users/Admin/Documents/Project_Python/artifacts/best_calorie_model.pkl"
+MODEL_PATH = "artifacts/best_calorie_model.pkl"
 model = joblib.load(MODEL_PATH)
 
 from features_for_web.weekly_planner import weekly_plan_generator
@@ -24,4 +24,4 @@ from features_for_web.goal_translator import goal_translator
 
 profile = UserProfile(31, "male", 180, 90, 39)
 print()
-print(goal_translator(model, profile, 1, 0, 100, 140, "duration_first", (100, 180), "pyramid", "Mon", free_days= ["Mon","Tue", "Fri","Sat"], peak_day= "Tue")[0])
+print(goal_translator(model, profile, 0.7, 0, 100, 140, "duration_first", (100, 180), "pyramid", "Mon", free_days= ["Mon","Tue", "Fri","Sat"], peak_day= "Tue")[0])
