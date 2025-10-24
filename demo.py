@@ -1,5 +1,5 @@
 import joblib 
-MODEL_PATH = "C:/Users/Admin/Documents/Project_Python/artifacts/best_calorie_model.pkl"
+MODEL_PATH = "artifacts/best_calorie_model.pkl"
 model = joblib.load(MODEL_PATH)
 
 from features_for_web.weekly_planner import weekly_plan_generator

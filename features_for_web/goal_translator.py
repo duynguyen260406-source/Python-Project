@@ -1,7 +1,3 @@
-import joblib 
-MODEL_PATH = "artifacts/best_calorie_model.pkl"
-model = joblib.load(MODEL_PATH)
-
 from features_for_web.weekly_planner import UserProfile
 from features_for_web.weekly_planner import weekly_plan_generator
 from typing import Literal, Tuple, List, Optional
