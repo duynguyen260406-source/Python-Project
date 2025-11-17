@@ -42,7 +42,7 @@ def normalize_day_label(day: str) -> str:
     }
     return mapping.get(d, d)
 
-def load_activity_db(path: str | Path = "exercise_dataset (1).csv") -> pd.DataFrame:
+def load_activity_db(path: str | Path = "data/exercise_dataset (1).csv") -> pd.DataFrame:
     """Đọc file data và chuẩn hoá cột."""
     p = Path(path)
     if not p.exists():
@@ -232,7 +232,7 @@ def allocate_durations(minutes_low: int, minutes_high: int, picks: List[Tuple[st
     return plans
 
 def make_weekly_plan(days: List[str], groups: List[str], weight_kg: float, weekly_target_kcal: float,
-                     data_path: str | Path = "exercise_dataset (1).csv",
+                     data_path: str | Path = "data/exercise_dataset (1).csv",
                      seed: int = 7) -> pd.DataFrame:
     random.seed(seed)
 
@@ -367,7 +367,7 @@ if __name__ == "__main__":
     groups = ["ngoài trời", "thể thao", "nghệ thuật"]
     weight_kg = 65.0
     weekly_target_kcal = 500.0
-    data_path = "exercise_dataset (1).csv"
+    data_path = "data/exercise_dataset (1).csv"
 
     # === TẠO BẢNG KẾ HOẠCH ===
     plan = make_weekly_plan(days, groups, weight_kg, weekly_target_kcal, data_path=data_path)
