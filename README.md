@@ -102,5 +102,11 @@ Cài đặt toàn bộ thư viện bằng:
 ```bash
 pip install -r requirements.txt
 ```
-### 3. Cách chạy chương trình: Phần này hướng dẫn cách chạy web Django của project
+### 3. Cài đặt các file dữ liệu cần thiết:
+Cài đặt toàn bộ data bằng:
+
+```bash
+download_data.py
+```
+### 4. Cách chạy chương trình: Phần này hướng dẫn cách chạy web Django của project
 
