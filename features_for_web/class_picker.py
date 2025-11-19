@@ -1,18 +1,3 @@
-"""
-- Input:
-    days: list[str]  (VD: ["thứ 2", "thứ 4", "thứ 6", "chủ nhật"])
-    groups: list[str]  (chọn bất kỳ trong: ["ngoài trời","trong nhà","thể thao","kháng lực","nghệ thuật"])
-    weight_kg: float
-    weekly_target_kcal: float
-
-- Output:
-    Bảng gồm: ngày | hoạt động | thời gian (60–120 phút) | kcal  (tổng gần với target)
-    + Hỗ trợ đổi cặp hành động giữa 2 ngày.
-
-Ghi chú:
-- Dữ liệu hoạt động lấy từ file "exercise_dataset (1).csv" với cột "Activity, Exercise or Sport (1 hour)" và "Calories per kg".
-- "Calories per kg" ≈ MET (kcal/kg/giờ). kcal ước tính = MET * weight_kg * (minutes/60).
-"""
 
 from __future__ import annotations
 
