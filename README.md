@@ -103,7 +103,7 @@ Cài đặt toàn bộ thư viện bằng:
 pip install -r requirements.txt
 ```
 ### 3. Cài đặt các file dữ liệu cần thiết:
-Cài đặt toàn bộ data bằng:
+Cài đặt toàn bộ data bằng cách chạy chương trình:
 
 ```bash
 download_data.py
