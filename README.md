@@ -1,5 +1,5 @@
 # Python-Project
-# Python-Project
+
 <p align="center">
 <img src="https://media.tenor.com/cZplm9ukCgkAAAAj/hello-kitty-gym-workout.gif" alt="Demo GIF" width="40%">
 </p>
