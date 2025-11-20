@@ -1,7 +1,5 @@
 
 from __future__ import annotations
-
-# ===== 1) IMPORTS CHUNG =====
 import math
 import random
 from dataclasses import dataclass
@@ -9,7 +7,7 @@ from typing import List, Dict, Tuple
 import pandas as pd
 from pathlib import Path
 
-# ===== 2) HÀM TIỆN ÍCH =====
+
 
 VN_DAY_ORDER = ["thứ 2","thứ 3","thứ 4","thứ 5","thứ 6","thứ 7","chủ nhật"]
 EN_DAY_ORDER = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
@@ -33,23 +31,17 @@ def load_activity_db(path: str | Path = "data/exercise_dataset (1).csv") -> pd.D
     if not p.exists():
         raise FileNotFoundError(f"Không thấy file dữ liệu: {p.resolve()}")
     raw = pd.read_csv(p)
-    # Chuẩn hoá tên cột
     df = raw.rename(columns={
         "Activity, Exercise or Sport (1 hour)": "activity",
         "Calories per kg": "cpk_per_hour",
     }).copy()
-    # Loại bỏ dòng NA
     df = df.dropna(subset=["activity","cpk_per_hour"])
-    # Bỏ trùng
     df = df.drop_duplicates(subset=["activity"]).reset_index(drop=True)
-    # Tạo cột lower để match từ khoá nhóm
     df["activity_lower"] = df["activity"].str.lower().str.strip()
     return df[["activity","activity_lower","cpk_per_hour"]]
 
-# ===== 3) PHÂN NHÓM HOẠT ĐỘNG BẰNG KEYWORDS =====
 
 GROUPS = ["ngoài trời","trong nhà","thể thao","kháng lực","nghệ thuật"]
-
 GROUP_KEYWORDS: Dict[str, List[str]] = {
     "ngoài trời": [
         "run","walk","hike","cycling","bike","row","stair","climb",
@@ -81,7 +73,6 @@ def tag_group(activity_lower: str) -> List[str]:
                 tags.append(g)
                 break
     if not tags:
-        # fallback nhẹ: phân loại bề mặt
         if any(k in activity_lower for k in ["dance","yoga","ballet","ballroom","zumba"]):
             tags.append("nghệ thuật")
         elif any(k in activity_lower for k in ["weight","lift","resist","circuit","kettlebell","pushup","situp","calisthenics"]):
@@ -92,7 +83,7 @@ def tag_group(activity_lower: str) -> List[str]:
             tags.append("trong nhà")
         else:
             tags.append("ngoài trời")
-    return list(dict.fromkeys(tags))  # unique, giữ thứ tự
+    return list(dict.fromkeys(tags))  
 
 def build_pool_by_groups(df: pd.DataFrame, chosen_groups: List[str], min_per_group: int = 3) -> pd.DataFrame:
     cg = [g for g in chosen_groups if g in GROUPS]
@@ -100,17 +91,14 @@ def build_pool_by_groups(df: pd.DataFrame, chosen_groups: List[str], min_per_gro
         raise ValueError(f"Nhóm hợp lệ: {GROUPS}")
     df = df.copy()
     df["groups"] = df["activity_lower"].apply(tag_group)
-    # Lọc theo nhóm đã chọn (ít nhất khớp 1 nhãn)
     mask = df["groups"].apply(lambda gs: any(g in gs for g in cg))
     pool = df[mask].copy()
-    # Đảm bảo mỗi nhóm có tối thiểu min_per_group hoạt động (nếu thiếu -> in cảnh báo)
     for g in cg:
         n = sum(pool["groups"].apply(lambda gs: g in gs))
         if n < min_per_group:
             print(f"[Cảnh báo] Nhóm '{g}' chỉ có {n} hoạt động khớp từ khoá trong data.")
     return pool.reset_index(drop=True)
 
-# ===== ) LOGIC CHỌN HOẠT ĐỘNG THEO NGÀY =====
 
 from dataclasses import dataclass
 
@@ -126,15 +114,10 @@ def estimate_kcal_db(weight_kg: float, minutes: int, cpk_per_hour: float) -> flo
     return float(cpk_per_hour * weight_kg * (minutes/60.0))
 
 def choose_activities_for_days(days: List[str], pool: pd.DataFrame, weekly_target_kcal: float, weight_kg: float) -> List[Tuple[str,str,float]]:
-    """
-    Trả về danh sách (day, activity, cpk_per_hour).
-    Heuristic: aim per-day kcal ~ target/n_days với thời lượng ban đầu 90 phút,
-    chọn activity có cpk gần nhất sao cho 3 ngày liên tiếp khác nhau.
-    """
+
     n = len(days)
     target_day = weekly_target_kcal / max(1,n)
     base_minutes = 90
-    # Tạo ứng viên sắp xếp theo |cpk*wt*(base_minutes/60) - target_day| tăng dần
     pool = pool.copy()
     pool["score"] = (pool["cpk_per_hour"]*weight_kg*(base_minutes/60.0) - target_day).abs()
     pool_sorted = pool.sort_values("score").reset_index(drop=True)
@@ -142,23 +125,20 @@ def choose_activities_for_days(days: List[str], pool: pd.DataFrame, weekly_targe
     picks: List[Tuple[str,str,float]] = []
     used_recent: List[str] = []
     for i, day in enumerate(days):
-        # chọn activity đầu tiên không trùng với 2 ngày trước đó
         chosen = None
         for _, row in pool_sorted.iterrows():
             act = row["activity"]
             if len(used_recent) >= 2 and act in used_recent[-2:]:
-                continue  # tránh lặp lại trong cửa sổ 3 ngày
+                continue  
             chosen = (day, act, float(row["cpk_per_hour"]))
             break
         if chosen is None:
-            # nếu không tìm được do pool quá nhỏ, cho phép trùng với ngày gần nhất nhưng không trùng 2 lần liền
             for _, row in pool_sorted.iterrows():
                 act = row["activity"]
                 if not used_recent or act != used_recent[-1]:
                     chosen = (day, act, float(row["cpk_per_hour"]))
                     break
         if chosen is None:
-            # trường hợp cực đoan – lấy dòng đầu tiên
             r0 = pool_sorted.iloc[0]
             chosen = (day, r0["activity"], float(r0["cpk_per_hour"]))
         picks.append(chosen)
@@ -166,12 +146,7 @@ def choose_activities_for_days(days: List[str], pool: pd.DataFrame, weekly_targe
     return picks
 
 def allocate_durations(minutes_low: int, minutes_high: int, picks: List[Tuple[str,str,float]], weight_kg: float, weekly_target_kcal: float) -> List[DayPlan]:
-    """
-    Phân bổ thời lượng trong [minutes_low, minutes_high] để tổng kcal gần target nhất.
-    Greedy: bắt đầu 60' cho tất cả, sau đó bơm thêm vào ngày có suất đốt cao hơn.
-    """
     n = len(picks)
-    # Khởi tạo
     plans = [
     DayPlan(day=day, activity=act, minutes=minutes_low,
             kcal=estimate_kcal_db(weight_kg, minutes_low, cpk),
@@ -183,31 +158,25 @@ def allocate_durations(minutes_low: int, minutes_high: int, picks: List[Tuple[st
     need = weekly_target_kcal - current_total
 
     if need <= 0:
-        # Không thể giảm dưới minutes_low; thử đổi hoạt động ít MET hơn nếu chênh quá lớn (bỏ qua để đơn giản)
         return plans
 
-    # Suất kcal per extra minute cho từng ngày
     per_min_rates = [cpk*weight_kg/60.0 for _,_,cpk in picks]
-    # Chia thêm phút theo thứ tự rate giảm dần
     remaining_add = [minutes_high - minutes_low for _ in picks]
     order = sorted(range(n), key=lambda i: per_min_rates[i], reverse=True)
 
     for i in order:
         if need <= 0:
             break
-        # phút cần để bù
         can_add = remaining_add[i]
         if can_add <= 0:
             continue
-        # kcal/m cho ngày i
         r = per_min_rates[i]
-        # số phút cần nếu bơm hết -> kcal thêm = r * can_add
         if r <= 0:
             continue
         minutes_needed = math.ceil(need / r)
         add_m = int(max(0, min(can_add, minutes_needed)))
         if add_m == 0 and need > 0:
-            add_m = min(can_add, 1)  # bơm tối thiểu 1p nếu còn cần
+            add_m = min(can_add, 1)
         plans[i].minutes += add_m
         added_kcal = r * add_m
         plans[i].kcal += added_kcal
@@ -221,22 +190,13 @@ def make_weekly_plan(days: List[str], groups: List[str], weight_kg: float, weekl
                      seed: int = 7) -> pd.DataFrame:
     random.seed(seed)
 
-    # Chuẩn hoá ngày và sắp theo lịch trong tuần
     days_norm = [normalize_day_label(d) for d in days]
     order_map = {d: i for i, d in enumerate(VN_DAY_ORDER)}
     days_sorted = sorted(days_norm, key=lambda d: order_map.get(d, 99))
-
-    # Load data và tạo pool theo nhóm
     df = load_activity_db(data_path)
     pool = build_pool_by_groups(df, groups, min_per_group=3)
-
-    # Chọn hoạt động cho từng ngày (tránh 3 ngày liên tiếp trùng)
     picks = choose_activities_for_days(days_sorted, pool, weekly_target_kcal, weight_kg)
-
-    # Phân bổ thời lượng 60–120 phút
     plans = allocate_durations(60, 120, picks, weight_kg, weekly_target_kcal)
-
-    # --- Tạo DataFrame có đủ 7 ngày ---
     plan_records = []
     selected_days = [p.day for p in plans]
 
@@ -250,7 +210,6 @@ def make_weekly_plan(days: List[str], groups: List[str], weight_kg: float, weekl
                 "Kcal ước tính": round(p.kcal, 1)
             })
         else:
-            # Ngày nghỉ
             plan_records.append({
                 "Ngày": day,
                 "Hoạt động": "Rest",
@@ -261,7 +220,6 @@ def make_weekly_plan(days: List[str], groups: List[str], weight_kg: float, weekl
     out = pd.DataFrame(plan_records)
     out["Ngày"] = pd.Categorical(out["Ngày"], categories=VN_DAY_ORDER, ordered=True)
     out = out.sort_values("Ngày").reset_index(drop=True)
-
     total = out["Kcal ước tính"].sum()
     print(f"Tổng kcal ước tính = {total:.1f} (Target = {weekly_target_kcal:.1f}) | Sai lệch = {total - weekly_target_kcal:+.1f}")
     return out
@@ -277,7 +235,6 @@ def swap_days(plan_df: pd.DataFrame, day1: str, day2: str) -> pd.DataFrame:
         print("[Cảnh báo] Không tìm thấy một trong hai ngày để swap.")
         return df
     i1, i2 = i1[0], i2[0]
-    # Hoán đổi từng cột
     cols = ["Hoạt động","Thời gian (phút)","Kcal ước tính"]
     tmp = df.loc[i1, cols].copy()
     df.loc[i1, cols] = df.loc[i2, cols].values
@@ -302,18 +259,15 @@ def change_activity(plan_df: pd.DataFrame, day: str, data_path: str, weight_kg: 
         print("[Lỗi] Ngày này là 'Rest' — không thể đổi hoạt động.")
         return df
 
-    # Load database
     act_db = load_activity_db(data_path)
     act_db["groups"] = act_db["activity_lower"].apply(tag_group)
 
-    # Xác định nhóm của hoạt động cũ
     old_info = act_db[act_db["activity"].str.lower() == old_activity.lower()]
     if old_info.empty:
         print(f"[Cảnh báo] Không xác định được nhóm của hoạt động cũ: {old_activity}")
         return df
     old_groups = old_info.iloc[0]["groups"]
 
-    # Lấy danh sách hoạt động khác cùng nhóm
     same_group = act_db[
         act_db["groups"].apply(lambda g: any(gr in old_groups for gr in g))
         & (act_db["activity"] != old_activity)
@@ -322,18 +276,14 @@ def change_activity(plan_df: pd.DataFrame, day: str, data_path: str, weight_kg: 
         print(f"[Cảnh báo] Không tìm thấy hoạt động khác cùng nhóm với '{old_activity}'.")
         return df
 
-    # Chọn ngẫu nhiên một hoạt động khác cùng nhóm
     new_row = same_group.sample(1).iloc[0]
     cpk = new_row["cpk_per_hour"]
 
-    # Tính lại thời gian sao cho kcal mới ≈ kcal cũ
-    # kcal = cpk * weight_kg * (minutes / 60)
     minutes_new = (old_kcal * 60) / (cpk * weight_kg)
     minutes_new = max(30, min(150, round(minutes_new, 1)))  # Giới hạn 30–150 phút
 
     kcal_new = estimate_kcal_db(weight_kg, minutes_new, cpk)
 
-    # Cập nhật lại bảng
     df.loc[idx[0], "Hoạt động"] = new_row["activity"]
     df.loc[idx[0], "Thời gian (phút)"] = minutes_new
     df.loc[idx[0], "Kcal ước tính"] = round(kcal_new, 1)
@@ -347,43 +297,35 @@ def change_activity(plan_df: pd.DataFrame, day: str, data_path: str, weight_kg: 
 
 
 if __name__ == "__main__":
-    # === THÔNG TIN NGƯỜI DÙNG ===
-    days = ["thứ 2", "thứ 4", "thứ 6"]  # người dùng có thể chỉnh
+    days = ["thứ 2", "thứ 4", "thứ 6"]  
     groups = ["ngoài trời", "thể thao", "nghệ thuật"]
     weight_kg = 65.0
     weekly_target_kcal = 500.0
     data_path = "data/exercise_dataset (1).csv"
 
-    # === TẠO BẢNG KẾ HOẠCH ===
     plan = make_weekly_plan(days, groups, weight_kg, weekly_target_kcal, data_path=data_path)
 
     print("\n===== KẾ HOẠCH TẬP LUYỆN TRONG TUẦN =====")
     print(plan.to_string(index=False))
 
-    # === HỎI NGƯỜI DÙNG CÓ MUỐN ĐỔI HOẠT ĐỘNG KHÔNG ===
     choice = input("\nBạn có muốn đổi hoạt động giữa các ngày không? ").strip().lower()
 
     while True:
         print("\n----------------------------------------")
         choice = input("Bạn muốn: (1) đổi hoạt động giữa 2 ngày, (2) đổi sang hoạt động khác (cùng nhóm), (3) thoát → Nhập 1/2/3: ").strip()
-
         if choice == "1":
             day1 = input("Nhập ngày thứ nhất muốn đổi (VD: 'thứ 2'): ").strip()
             day2 = input("Nhập ngày thứ hai muốn đổi (VD: 'chủ nhật'): ").strip()
             plan = swap_days(plan, day1, day2)
             print("\n===== KẾ HOẠCH SAU KHI ĐỔI GIỮA 2 NGÀY =====")
             print(plan.to_string(index=False))
-
         elif choice == "2":
             day = input("Nhập ngày muốn đổi hoạt động (VD: 'thứ 6'): ").strip()
             plan = change_activity(plan, day, data_path, weight_kg)
             print("\n===== KẾ HOẠCH SAU KHI TỰ ĐỔI HOẠT ĐỘNG =====")
             print(plan.to_string(index=False))
-
-
         elif choice == "3":
             print("\nKhông đổi hoạt động. Kết thúc chương trình")
             break
-
         else:
             print("Lựa chọn không hợp lệ, vui lòng nhập lại (1, 2 hoặc 3).")
