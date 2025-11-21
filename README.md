@@ -1,3 +1,6 @@
+
+
+
 # Python-Project
 
 <p align="center">
@@ -16,8 +19,8 @@ Mục tiêu của project là nghiên cứu và xây dựng một hệ thống t
 - **Goal Translator**: Cho phép người dùng nhập mục tiêu tăng hoặc giảm cân và hệ thống tự động chuyển đổi thành lượng calories cần đốt mỗi tuần. Dựa trên đó, ứng dụng tạo kế hoạch tập luyện phù hợp về số buổi, thời lượng và cường độ để giúp người dùng đạt được mục tiêu.
 - **Class Picker**:
 - **Meal suggest**: Tính năng Meal Suggest cung cấp danh sách món ăn phù hợp với nhu cầu calories và sở thích của người dùng. Hệ thống phân tích câu mô tả đầu vào, trích xuất thông tin quan trọng và tìm các món có mức độ tương đồng cao nhất trong dữ liệu món ăn để đưa ra gợi ý phù hợp.
-- **What-if Coach**:
-- **Swap Calories**: 
+- **What-if Coach**: What-if Coach giúp người dùng kiểm tra các kịch bản thay đổi thời lượng tập hoặc nhịp tim để xem lượng calories tiêu thụ sẽ thay đổi như thế nào. Dựa trên thông tin cá nhân và buổi tập hiện tại, hệ thống dự đoán calories và tạo bảng so sánh giữa các mức thời gian ±10 phút và nhịp tim ±20 bpm, giúp người dùng tối ưu hóa buổi tập một cách trực quan.
+- **Swap Calories**: Tính năng này cho phép người dùng nhập tên món ăn và số lượng, sau đó hệ thống tự động tính toán cần tập bao nhiêu phút để đốt cháy lượng calories tương ứng. Ứng dụng lấy dữ liệu từ file món ăn, tính tổng calories, rồi dùng mô hình Machine Learning kết hợp tìm kiếm nhị phân để ước tính thời gian luyện tập chính xác và trả về kết quả gồm số phút cần thiết và mức calories đốt được.
 ### 3. Cách hoạt động tổng quát:
 ### 3.1. Xây dựng mô hình Linear Regression (from scratch):
 
