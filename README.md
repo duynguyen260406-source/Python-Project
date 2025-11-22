@@ -115,19 +115,20 @@ download_data.py
 ### a. Cấu trúc Django
 kitty_fitness/
 │
-├── kitty_fitness/          # cấu hình chính
-│   ├── settings.py
-│   ├── urls.py
+├── kitty_fitness/ # cấu hình chính
+│ ├── settings.py
+│ ├── urls.py
 │
-├── tracker/                # app chính
-│   ├── models.py           # (optional – project này dùng ML thay vì DB models)
-│   ├── views.py            # xử lý request + trả về HTML
-│   ├── api.py              # xử lý toàn bộ API gọi ML model
-│   ├── urls.py
-│   ├── templates/tracker/  # giao diện HTML
-│   ├── static/tracker/     # CSS, JS, hình
+├── tracker/ # app chính
+│ ├── models.py # (optional – project này dùng ML thay vì DB models)
+│ ├── views.py # xử lý request + trả về HTML
+│ ├── api.py # xử lý toàn bộ API gọi ML model
+│ ├── urls.py
+│ ├── templates/tracker/ # giao diện HTML
+│ └── static/tracker/ # CSS, JS, hình
 │
 └── manage.py
+
 ### Phân tách giao diện và xử lý
 - **views.py** – render HTML (Goal Translator, Weekly Planner…)
 - **api.py** – xử lý logic tính toán, gọi ML model và trả JSON
