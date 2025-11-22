@@ -201,14 +201,10 @@ tracker/static/tracker/js/
 
 Payload từ frontend:
 
-```json
 {
   "free_days": ["Mon", "Wed", "Fri"]
 }
 
----
-
-```md
 ### g. Ghi chú chân trang
 
 Tất cả trang có footer chuẩn gồm:
@@ -229,17 +225,14 @@ age: 25
 sex: male
 height: 170
 weight: 65
+
 Mở rộng trong tương lai:
 
 - User model  
 - Lưu profile & lịch tập  
 - Dashboard tiến độ  
 ### i. Chạy dự án
-
-```bash
-python manage.py runserver
 Frontend tự gọi API ML → hiển thị kết quả ngay.
----
 
 
 
