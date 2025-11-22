@@ -128,15 +128,18 @@ kitty_fitness/
 │   ├── static/tracker/     # CSS, JS, hình
 │
 └── manage.py
-##Phân tách giao diện và xử lý:
-views.py → render HTML (Goal Translator page, Weekly Planner page, v.v.)
-api.py → xử lý logic tính toán, dùng model ML, trả JSON cho frontend
-urls.py → routing
-static/ → tổ chức file CSS, JS, image
-templates/ → khu vực HTML, dùng Django template
-##b.Các giao diện chính trong dự án
-##Django backend cung cấp nhiều API endpoint phục vụ các tính năng ML.
-##Tất cả API đều sử dụng POST và trả về JSON.
+## Phân tách giao diện và xử lý
+- **views.py** – render HTML (Goal Translator, Weekly Planner…)
+- **api.py** – xử lý logic tính toán, gọi ML model và trả JSON
+- **urls.py** – định tuyến
+- **static/** – chứa CSS, JS, hình ảnh
+- **templates/** – HTML + Django Template Engine
+
+## b. Các giao diện chính trong dự án
+Django backend cung cấp nhiều API endpoint phục vụ các tính năng ML.
+
+## Tất cả API đều sử dụng `POST` và trả về `JSON`.
+
 | Tính năng       | Endpoint                | Ý nghĩa                                             |
 | --------------- | ----------------------- | --------------------------------------------------- |
 | Goal Translator | `/goal_translator_api/` | Tính toán kcal mục tiêu + lịch tập luyện            |
