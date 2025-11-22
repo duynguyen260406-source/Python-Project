@@ -112,7 +112,7 @@ Cài đặt toàn bộ data bằng cách chạy chương trình:
 download_data.py
 ```
 ### 4. Cách chạy chương trình: Phần này hướng dẫn cách chạy web Django của project
-## a. Cấu trúc Django
+### a. Cấu trúc Django
 kitty_fitness/
 │
 ├── kitty_fitness/          # cấu hình chính
@@ -128,17 +128,17 @@ kitty_fitness/
 │   ├── static/tracker/     # CSS, JS, hình
 │
 └── manage.py
-## Phân tách giao diện và xử lý
+### Phân tách giao diện và xử lý
 - **views.py** – render HTML (Goal Translator, Weekly Planner…)
 - **api.py** – xử lý logic tính toán, gọi ML model và trả JSON
 - **urls.py** – định tuyến
 - **static/** – chứa CSS, JS, hình ảnh
 - **templates/** – HTML + Django Template Engine
 
-## b. Các giao diện chính trong dự án
+### b. Các giao diện chính trong dự án
 Django backend cung cấp nhiều API endpoint phục vụ các tính năng ML.
 
-## Tất cả API đều sử dụng `POST` và trả về `JSON`.
+### Tất cả API đều sử dụng `POST` và trả về `JSON`.
 
 | Tính năng       | Endpoint                | Ý nghĩa                                             |
 | --------------- | ----------------------- | --------------------------------------------------- |
@@ -149,76 +149,86 @@ Django backend cung cấp nhiều API endpoint phục vụ các tính năng ML.
 | Swap Calories   | `/swap_calories_api/`   | Tính số phút cần tập để đốt calories từ một món ăn  |
 | Class Picker    | `/class_picker_api/`    | Gợi ý loại bài tập phù hợp (nếu bạn triển khai sau) |
 
-##c.Frontend — Backend Workflow
-Ví dụ với Goal Translator:
-Người dùng nhập mục tiêu tăng/giảm cân
-Nhấn “Tạo kế hoạch” → JS gửi payload qua Fetch API
-Backend nhận request → vào goal_translator_api
-API:
-tính kcal cần đốt mỗi ngày
-gọi model ML để estimate calories
-sinh lịch tập theo ngày
-API trả JSON
-Frontend nhận kết quả → dựng bảng kế hoạch
-Hoàn toàn tương tự cho meal suggest, what-if coach hoặc swap calories.
-##d. Tích hợp mô hình ML vào Django
-Tất cả ML model được load sẵn ở backend trong api.py.
-Ví dụ:
+### c. Frontend — Backend Workflow
+
+**Ví dụ: Goal Translator**
+
+1. Người dùng nhập mục tiêu tăng/giảm cân  
+2. Nhấn “Tạo kế hoạch” → JavaScript gửi payload bằng Fetch API  
+3. Backend nhận request → xử lý tại `goal_translator_api`  
+4. API thực hiện:
+   - tính kcal cần đốt mỗi ngày  
+   - gọi ML model để estimate calories  
+   - sinh lịch tập theo ngày  
+5. API trả JSON  
+6. Frontend nhận JSON → dựng bảng kế hoạch  
+
+> Meal Suggest, What-if Coach, Swap Calories dùng workflow tương tự.
+### d. Tích hợp mô hình ML vào Django
+
+ML model được load trong `api.py`.
+
+```python
 import joblib
 calories_model = joblib.load("models/calories_predictor.pkl")
-ML model chạy hoàn toàn offline → không cần server ngoài.
 Quy trình chung của mỗi API ML:
-Nhận dữ liệu từ frontend
-Xử lý dữ liệu (chuẩn hoá, scale…)
-Dự đoán bằng ML model
-Trả về JSON để hiển thị
-##e. Giao diện (Frontend)
-Các file nằm trong:
+- Nhận dữ liệu từ frontend
+- Xử lý dữ liệu (chuẩn hoá, scale…)
+- Dự đoán bằng ML model
+- Trả về JSON để hiển thị
+---
+
+```md
+### e. Giao diện (Frontend)
+
+**Thư mục:**
 tracker/templates/tracker/*.html
-tracker/static/tracker/css
-tracker/static/tracker/js
-HTML gồm:
-form nhập thông tin
-bảng kết quả (Goal Translator / Weekly Planner)
-popup giới thiệu nhóm
-tạo table động bằng JavaScript
-JavaScript gồm:
-fetch API
-tạo bảng kế hoạch
-xử lý popup
-update UI theo kết quả ML
-CSS:
-style Hello Kitty
-responsive
-icon & ảnh minh họa
-##f. Tính năng chọn ngày rảnh (free-days)
-Frontend thêm input checkbox (Weekday selector).
-Backend nhận:
-"free_days": ["Mon", "Wed", "Fri"]
-API Weekly Planner & Goal Translator sắp xếp lại lịch tập phù hợp thời gian rảnh của người dùng.
-##g. Ghi chú chân trang
-Tất cả trang có một footer chuẩn chứa các định nghĩa:
-*Ghi chú:
-- Mục tiêu (kcal): ...
-- Gợi ý thời lượng: ...
-- Gợi ý nhịp tim: ...
-- Kcal ước tính: ...
-- Khả thi: ...
-- Note: ...
-Gắn trong goal_translator.html, cũng có thể tách thành một template component để tái sử dụng.
-##h. Session / User profile (nếu mở rộng)
-Hiện bản của bạn dùng thông tin mẫu:
+tracker/static/tracker/css/
+tracker/static/tracker/js/
+
+**HTML:**
+- form nhập thông tin  
+- bảng kết quả  
+- popup  
+- table động  
+
+**JavaScript:** fetch API, tạo bảng kế hoạch, popup, update UI  
+**CSS:** Hello Kitty style, responsive, icon minh hoạ
+### f. Tính năng chọn ngày rảnh (Free-days)
+
+Payload gửi từ frontend:
+
+```json
+{
+  "free_days": ["Mon", "Wed", "Fri"]
+}
+
+---
+
+```md
+### g. Ghi chú chân trang
+
+Tất cả trang có **footer chuẩn** gồm:
+
+- Mục tiêu (kcal)  
+- Gợi ý thời lượng  
+- Gợi ý nhịp tim  
+- Kcal ước tính  
+- Khả thi  
+- Notes  
+
+Có thể tách thành template component.
+### h. Session / User Profile (mở rộng)
+
+Dữ liệu mẫu:
 age: 25
 sex: male
 height: 170
 weight: 65
 
-Dự án cho phép dễ dàng nâng cấp:
-tạo User model
-lưu profile, lịch tập, mục tiêu
-hiển thị dashboard (progress tracking)
-##i. Chạy dự án
-python manage.py runserver
-Frontend tự gọi API ML → hiển thị kết quả ngay.
-
-
+Có thể mở rộng:
+- User model  
+- Lưu lịch tập  
+- Dashboard theo dõi tiến độ  
+### i. Chạy dự án
+Frontend tự gọi API ML → hiển thị ngay.
