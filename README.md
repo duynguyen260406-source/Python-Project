@@ -167,10 +167,10 @@ Django backend cung cấp nhiều API endpoint phục vụ các tính năng ML.
 ### d. Tích hợp mô hình ML vào Django
 
 Tất cả ML model được load sẵn ở backend trong `api.py`.
-
+```python
 import joblib
 calories_model = joblib.load("models/calories_predictor.pkl")
-
+```
 Quy trình chung của mỗi API ML:
 
 Nhận dữ liệu từ frontend
@@ -184,10 +184,11 @@ Trả về JSON để hiển thị
 ### e. Giao diện (Frontend)
 
 **Thư mục:**
-
+```bash
 tracker/templates/tracker/*.html
 tracker/static/tracker/css/
 tracker/static/tracker/js/
+```
 **HTML gồm:**
 
 - form nhập thông tin  
@@ -200,11 +201,11 @@ tracker/static/tracker/js/
 ### f. Tính năng chọn ngày rảnh (Free-days)
 
 Payload từ frontend:
-
+```json
 {
   "free_days": ["Mon", "Wed", "Fri"]
 }
-
+```
 ### g. Ghi chú chân trang
 
 Tất cả trang có footer chuẩn gồm:
@@ -220,12 +221,12 @@ Có thể tách thành template component tái sử dụng.
 ### h. Session / User Profile (mở rộng)
 
 Hiện dùng dữ liệu mẫu:
-
+```makefile
 age: 25
 sex: male
 height: 170
 weight: 65
-
+```
 Mở rộng trong tương lai:
 
 - User model  
