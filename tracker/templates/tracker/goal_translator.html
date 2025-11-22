@@ -1,0 +1,327 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🌸 Hello Kitty Fitness 🌸</title>
+  <link rel="stylesheet" href="{% static 'tracker/css/goal_translator.css' %}">
+   <!--font Modak and DynaPuff-->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=DynaPuff:wght@400..700&family=Maven+Pro:wght@400..900&family=Modak&family=Rubik+Bubbles&family=Sigmar+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === name + "=") {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie("csrftoken");
+  </script>
+
+  <div id="aboutPopup" class="popup-overlay">
+    <div class="popup-box">
+      <div class="popup-inner">
+        <h2 class="popup-title">About us</h2>
+        <p class ="popup-desc">
+          Beautiful and passionate souls converge to create Kitty Fitness - 
+          a space where technology meets emotion, radiating the energy of love and warmth 💖
+        </p>
+
+        <ul class="popup-members">
+          <li>11245870 – Nguyễn Khánh Duy</li>
+          <li>11245886 – Trần Thị Nhật Khánh</li>
+          <li>11245840 – Vũ Đức Anh</li>
+          <li>11245892 – Lê Phạm Khánh Linh</li>
+          <li>11245921 – Hoàng Thục Nhi</li>
+          <li>11245899 – Vũ Trần Cát Linh</li>
+        </ul>
+        
+        <img class="kitty-left" src="{% static 'tracker/images/pop-up1.png' %}">
+        <img class="kitty-right" src="{% static 'tracker/images/pop-up2.png' %}">
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src= {% static 'tracker/images/gif3.gif' %} alt="Kitty Logo">
+      <h1>Kitty Fitness</h1>
+    </div>
+    <nav>
+      <div class="dropdown">
+        <a href="#" class="features-btn">Features ▾</a>
+        <div class="dropdown-content">
+            <a href="{% url 'weekly_plan_generator' %}">Weekly Workout Plan</a>
+            <a href="{% url 'goal_translator' %}">Goal-to-Workout</a>
+            <a href="{% url 'class_picker' %}">Workout Class Finder</a>
+            <a href="{% url 'what_if_coach' %}">What-If Fitness Coach</a>
+            <a href="{% url 'calorie_swap' %}">Calorie Burn Swap</a>
+            <a href="{% url 'meal_suggest' %}">Smart Meal Suggestion</a>
+        </div>
+      </div>
+      <a href="#" id="aboutBtn">About us</a>
+    </nav>
+  </header>
+
+  <!--Sửa ở đây-->
+  <div class="main-wrapper">
+    <div class="container">
+      <h2 class="section-title">🎯 Workout plan built based on your weight goal</h2>
+
+      <div class="input-row">
+          <label>Desired weight change (kg):</label>
+          <input type="number" id="inputWeight" placeholder="Enter the number of kilograms you want to lose in one week">
+      </div>
+
+      <div class="input-row">
+          <label>Max hours per day:</label>
+          <input type="number" id="inputHours" placeholder="Enter the maximum number of hours for your training day">
+      </div>
+
+      <div class="input-row">
+          <label>Divide workout sessions:</label>
+          <select id="splitMode">
+              <option value="" disable selected hidden>Choose how you want your workout sessions to be divided</option>
+              <option value="equal">Equal</option>
+              <option value="pyramid">Pyramid</option>
+          </select>
+      </div>
+
+      <div class="input-row day-row">
+        <label>Select training days:</label>
+        <div class="day-buttons" id="freeDays">
+            <div class="day-btn">Monday</div>
+            <div class="day-btn">Tuesday</div>
+            <div class="day-btn">Wednesday</div>
+            <div class="day-btn">Thursday</div>
+            <div class="day-btn">Friday</div>
+            <div class="day-btn">Saturday</div>
+            <div class="day-btn">Sunday</div>
+        </div>
+      </div>
+
+      <div id="intensitySection" style="display:none;">
+        <div class="input-row day-row">
+          <label>Highest-intensity day:</label>
+          <div class="intensity-buttons">
+            <div class="day-btn">Monday</div>
+            <div class="day-btn">Tuesday</div>
+            <div class="day-btn">Wednesday</div>
+            <div class="day-btn">Thursday</div>
+            <div class="day-btn">Friday</div>
+            <div class="day-btn">Saturday</div>
+            <div class="day-btn">Sunday</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="create-btn">Generate now</button>
+      <div class="create-line-bottom"></div>
+    </div>
+
+    <div id="weeklyPlanWrapper" style="display:none;">
+      <h3 class="table-title">7-day workout plan</h3>
+      <table>
+        <tr>
+          <th>Day</th>
+          <th>Target (kcal)</th>
+          <th>Duration</th>
+          <th>Heart rate</th>
+          <th>Kcal</th>
+          <th>Feasible</th>
+          <th>Note</th>
+        </tr>
+      </table>
+      
+      <div class="plan-note">
+        <p><strong>*Note:</strong></p>
+        <ul>
+<li><strong>Target (kcal):</strong> Planned calories for that day</li>
+          <li><strong>Duration:</strong> Suggested workout duration. If it's 0, it's a rest day</li>
+          <li><strong>Heart rate:</strong> The average heart rate you need to maintain during the session</li>
+          <li><strong>Kcal:</strong> The estimated energy you can actually burn if you follow the suggested duration and heart rate</li>
+          <li><strong>Feasible:</strong> An evaluation of whether you can achieve the calorie target under the suggested conditions
+                                         (Yes: achievable; No: not achievable due to maxed duration and heart rate; “–”: rest day, not evaluated)</li>
+          <li><strong>Note:</strong> Explanation of why the goal is achieved/not achieved, or additional guidance</li>
+        </ul>
+      </div>
+      <!--nút reload trang-->
+      <button class="reload-btn" onclick="location.reload();">Restart</button>
+    </div>
+  </div>
+
+  <!--Popup ABOUT US-->
+  <script>
+  const aboutBtn = document.getElementById("aboutBtn");
+  const aboutPopup = document.getElementById("aboutPopup");
+  const popupBox = document.querySelector(".popup-box");
+
+  // mở popup
+  aboutBtn.addEventListener("click", () => {
+      aboutPopup.style.display = "flex";
+  });
+
+  // click ngoài popup để tắt
+  aboutPopup.addEventListener("click", (e) => {
+      if (!popupBox.contains(e.target)) {
+          aboutPopup.style.display = "none";
+      }
+  });
+</script>
+
+<script>
+document.getElementById("surveyForm").addEventListener("submit", async function(e) {
+    e.preventDefault();  // Ngăn reload trang
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const response = await fetch("{% url 'save_survey' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    });
+
+    const result = await response.json();
+
+    if (result.status === "success") {
+        document.getElementById("surveyMessage").innerText = "💖 Thank you for providing your information!";
+    }
+});
+</script>
+
+<!--Ẩn hiện ngày rảnh-->
+  <script>
+    // Toggle ngày rảnh
+    document.querySelectorAll("#freeDays .day-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            btn.classList.toggle("active-day");
+        });
+    });
+
+    // Toggle ngày cường độ cao nhất (chọn 1 ngày duy nhất)
+    document.querySelectorAll(".intensity-buttons .day-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".intensity-buttons .day-btn")
+                .forEach(b => b.classList.remove("active-day"));
+            btn.classList.add("active-day");
+        });
+    });
+
+    // Hiện/ẩn mục intensity khi chọn pyramid
+    document.getElementById("splitMode").addEventListener("change", function () {
+        const mode = this.value;
+        const section = document.getElementById("intensitySection");
+
+        if (mode === "pyramid") {
+            section.style.display = "block";
+        } else {
+            section.style.display = "none";
+            // xóa chọn cũ
+            document.querySelectorAll(".intensity-buttons .day-btn")
+                    .forEach(b => b.classList.remove("active-day"));
+        }
+    });
+  </script>
+
+  <script>
+  document.querySelector(".create-btn").addEventListener("click", async () => {
+
+    // ====== LẤY INPUT ======
+    const cal = document.getElementById("inputWeight").value.trim();
+    const hours = document.getElementById("inputHours").value.trim();
+    const mode = document.getElementById("splitMode").value;
+
+    const freeDays = [...document.querySelectorAll("#freeDays .day-btn.active-day")]
+        .map(btn => btn.innerText.trim());
+
+    const intensityDays = [...document.querySelectorAll(".intensity-buttons .day-btn.active-day")]
+        .map(btn => btn.innerText.trim());
+
+    // ====== VALIDATE ======
+    if (!cal) { alert("⚠️ Please enter the amount of weight you want to lose!"); return; }
+    if (!hours) { alert("⚠️ Please enter the maximum number of hours per day!"); return; }
+    if (freeDays.length === 0) { alert("⚠️ Please select at least one available day!"); return; }
+    if (mode === "pyramid" && intensityDays.length === 0) {
+        alert("⚠️ Please select the highest-intensity day!");
+        return;
+    }
+
+    // peak day
+    let peakDay = null;
+    if (mode === "pyramid") {
+        peakDay = intensityDays[0];
+    }
+
+    // ====== GỌI API BACKEND ======
+    const response = await fetch("/api/goal-translator/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            weightChange: cal,
+            maxHours: hours,
+            freeDays,
+            splitMode: mode,
+            peakDay
+        })
+    });
+
+    const result = await response.json();
+
+    if (result.status === "success") {
+        renderTable(result.plan);
+        document.getElementById("weeklyPlanWrapper").style.display = "block";
+    } else {
+        alert("❌ Error generating the plan!");
+    }
+  });
+  </script>
+
+  <script>
+function renderTable(plan) {
+
+    // xoá dữ liệu cũ
+    const table = document.querySelector("#weeklyPlanWrapper table");
+    table.innerHTML = `
+        <tr>
+            <th>Day</th><th>Target (kcal)</th><th>Duration</th>
+            <th>Heart rate</th><th>Kcal</th><th>Feasible</th><th>Note</th>
+        </tr>
+    `;
+
+    // render bảng mới
+    plan.forEach(row => {
+        table.innerHTML += `
+            <tr>
+                <td>${row.Day}</td>
+                <td>${row.Target_kcal}</td>
+                <td>${row.Suggest_Duration_min} minutes</td>
+                <td>${row.Suggest_HR_bpm} bpm</td>
+                <td>${row.Est_kcal}</td>
+                <td>${row.Feasible}</td>
+                <td>${row.Note}</td>
+            </tr>
+        `;
+    });
+}
+</script>
+</body>
+</html>

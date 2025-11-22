@@ -1,0 +1,313 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🌸 Hello Kitty Fitness 🌸</title>
+  <link rel="stylesheet" href="{% static 'tracker/css/calorie_swap.css' %}">
+   <!--font Modak and DynaPuff-->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=DynaPuff:wght@400..700&family=Maven+Pro:wght@400..900&family=Modak&family=Rubik+Bubbles&family=Sigmar+One&display=swap" rel="stylesheet">
+</head>
+<body>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const foodInput = document.getElementById("food_name");
+      const suggestBox = document.getElementById("foodSuggestions");
+
+      foodInput.addEventListener("input", async function () {
+          const query = this.value.trim();
+
+          if (query.length === 0) {
+              suggestBox.innerHTML = "";
+              return;
+          }
+
+          const res = await fetch(`/api/food-suggest/?q=${query}`);
+          const data = await res.json();
+
+          suggestBox.innerHTML = "";
+
+          data.results.forEach(item => {
+              const div = document.createElement("div");
+              div.classList.add("autocomplete-item");
+              div.textContent = item;
+              div.addEventListener("click", () => {
+                  foodInput.value = item;
+                  suggestBox.innerHTML = "";
+              });
+              suggestBox.appendChild(div);
+          });
+      });
+
+      document.addEventListener("click", (e) => {
+          if (!foodInput.contains(e.target)) {
+              suggestBox.innerHTML = "";
+          }
+      });
+  });
+  </script>
+
+
+    // Ẩn dropdown khi click ngoài
+    document.addEventListener("click", (e) => {
+        if (!foodInput.contains(e.target)) {
+            suggestBox.innerHTML = "";
+        }
+    });
+  </script>
+
+  <!-- POPUP KẾT QUẢ -->
+  <div id="resultPopup" class="result-popup-overlay" style="display:none;">
+    <div class="result-popup-box">
+      <img src="{% static 'tracker/images/gif2.gif' %}" class="result-gif">
+      <h2 class="result-popup-title">🎀 Activity You Need to Complete</h2>
+
+      <p class="result-line1" id="popupCalories">0 kcal</p>
+      <p class="result-line" id="popupSummaryText">...</p>
+      <p class="warning-text" id="popupWarning"></p>
+
+      <button id="closeResultPopup" class="close-btn">Close</button>
+    </div>
+  </div>
+
+
+
+  <div id="aboutPopup" class="popup-overlay">
+    <div class="popup-box">
+      <div class="popup-inner">
+        <h2 class="popup-title">About us</h2>
+        <p class ="popup-desc">
+          Beautiful and passionate souls converge to create Kitty Fitness - 
+          a space where technology meets emotion, radiating the energy of love and warmth 💖
+        </p>
+
+        <ul class="popup-members">
+          <li>11245870 – Nguyễn Khánh Duy</li>
+          <li>11245886 – Trần Thị Nhật Khánh</li>
+          <li>11245840 – Vũ Đức Anh</li>
+          <li>11245892 – Lê Phạm Khánh Linh</li>
+          <li>11245921 – Hoàng Thục Nhi</li>
+          <li>11245899 – Vũ Trần Cát Linh</li>
+        </ul>
+        
+        <img class="kitty-left" src="{% static 'tracker/images/pop-up1.png' %}">
+        <img class="kitty-right" src="{% static 'tracker/images/pop-up2.png' %}">
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const userProfile = {
+    age: "{{ profile.age|default:0 }}",
+    sex: "{{ profile.sex|default:'' }}",
+    height: "{{ profile.height|default:0 }}",
+    weight: "{{ profile.weight|default:0 }}",
+    heart_rate: "{{ profile.heart_rate|default:0 }}",
+    body_temp: "{{ profile.body_temp|default:37 }}",
+    efficiency: "{{ profile.efficiency|default:0 }}",
+    intensity: "{{ profile.intensity|default:0 }}"
+  };
+  </script>
+
+  {% if not profile %}
+  <script>
+  alert("You haven't completed your fitness survey yet! Please finish it before using this feature 💗");
+  window.location.href = "/khao-sat/";
+  </script>
+  {% endif %}
+
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src= {% static 'tracker/images/gif3.gif' %} alt="Kitty Logo">
+      <h1>Kitty Fitness</h1>
+    </div>
+    <nav>
+      <div class="dropdown">
+        <a href="#" class="features-btn">Features ▾</a>
+        <div class="dropdown-content">
+            <a href="{% url 'weekly_plan_generator' %}">Weekly Workout Plan</a>
+            <a href="{% url 'goal_translator' %}">Goal-to-Workout</a>
+            <a href="{% url 'class_picker' %}">Workout Class Finder</a>
+            <a href="{% url 'what_if_coach' %}">What-If Fitness Coach</a>
+            <a href="{% url 'calorie_swap' %}">Calorie Burn Swap</a>
+            <a href="{% url 'meal_suggest' %}">Smart Meal Suggestion</a>
+        </div>
+      </div>
+      <a href="#" id="aboutBtn">About us</a>
+    </nav>
+  </header>
+
+  <div class="wave-divider"></div>
+
+  <div class="main-wrapper">
+    <main class="swap-main-content">
+      <div class="swap-header">
+        <h2 class="swap-title">
+            Convert Your Favorite Food Into Equivalent Exercises 🍔 🔄 🏃‍♀️
+        </h2>
+        <div class="swap-divider"></div>
+      </div>
+
+        <div class="swap-container">
+          
+            <section class="swap-input-block food-block">
+                <form id="swapAlgorithmForm" class="input-form">
+                    {% csrf_token %} 
+                    <div class="form-group">
+                        <label for="food_name">Food name:</label>
+                        <input type="text" id="food_name" name="food_name" autocomplete="off" required placeholder="Tell me what you ate today 🍽️💖">
+                        <div class="autocomplete-box" id="foodSuggestions"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" min="1" required placeholder="Enter number of servings">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="max_duration">Maximum workout duration (minutes):</label>
+                        <input type="number" id="max_duration" name="max_duration" min="1" max="180" required placeholder="Enter maximum duration per session">
+                    </div>
+
+                    <button type="submit" id="calculateSwapBtn" class="swap-btn dynapuff">
+                        Calculate
+                    </button>
+                </form>
+
+              </section>
+        </div>
+    </main>
+  </div>
+<script>
+  const aboutBtn = document.getElementById("aboutBtn");
+  const aboutPopup = document.getElementById("aboutPopup");
+  const popupBox = document.querySelector(".popup-box");
+
+  // mở popup
+  aboutBtn.addEventListener("click", () => {
+      aboutPopup.style.display = "flex";
+  });
+
+  // click ngoài popup để tắt
+  aboutPopup.addEventListener("click", (e) => {
+      if (!popupBox.contains(e.target)) {
+          aboutPopup.style.display = "none";
+      }
+  });
+</script>
+
+<script>
+document.getElementById("swapAlgorithmForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const foodName = document.getElementById("food_name").value;
+    const quantity = Number(document.getElementById("quantity").value);
+    const maxDuration = Number(document.getElementById("max_duration").value);
+
+    const payload = new FormData();
+    payload.append("food_name", foodName);
+    payload.append("quantity", quantity);
+    payload.append("age", userProfile.age);
+    payload.append("sex", userProfile.sex);
+    payload.append("height", userProfile.height);
+    payload.append("weight", userProfile.weight);
+    payload.append("heart_rate", userProfile.heart_rate);
+    payload.append("body_temp", userProfile.body_temp);
+    payload.append("max_min", maxDuration);
+
+    const response = await fetch("/api/swap-calorie/", {
+        method: "POST",
+        body: payload,
+        headers: { "X-CSRFToken": csrftoken }
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+        alert(data.error);
+        return;
+    }
+
+    document.getElementById("popupCalories").innerText = `${data.food_kcal} kcal`;
+
+    const bpm = userProfile.heart_rate;
+
+    document.getElementById("popupSummaryText").innerText =
+      `To burn ${data.food_kcal} kcal from ${quantity} ${foodName}, you need ${data.required_minutes} minutes at ${bpm} bpm.`;
+
+    document.getElementById("resultPopup").style.display = "flex";
+});
+</script>
+
+
+<script>
+document.getElementById("surveyForm").addEventListener("submit", async function(e) {
+    e.preventDefault();  // Ngăn reload trang
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const response = await fetch("{% url 'save_survey' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    });
+
+    const result = await response.json();
+
+    if (result.status === "success") {
+        document.getElementById("surveyMessage").innerText = "💖 Thank you for submitting your information!";
+    }
+});
+</script>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+</script>
+
+<script>
+  document.getElementById("closeResultPopup").addEventListener("click", function() {
+    document.getElementById("resultPopup").style.display = "none";
+  });
+</script>
+
+<script>
+  setInterval(() => {
+      const gif = document.querySelector(".result-gif");
+      if (gif) {
+          const src = gif.src;
+          gif.src = "";   // clear source
+          gif.src = src;  // reload GIF to restart animation
+      }
+  }, 4000); // reset mỗi 4 giây (chỉnh tùy GIF dài hay ngắn)
+  </script>
+
+  <script>
+  document.getElementById("resultPopup").addEventListener("transitionstart", () => {
+      const gif = document.querySelector(".result-gif");
+      gif.src = gif.src;
+  });
+  </script>
+
+</body>
+</html>

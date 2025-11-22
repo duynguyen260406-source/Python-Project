@@ -1,0 +1,272 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🌸 Hello Kitty Fitness 🌸</title>
+  <link rel="stylesheet" href="{% static 'tracker/css/main_views.css' %}">
+   <!--font Modak and DynaPuff-->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&family=Maven+Pro:wght@400..900&family=Modak&family=Rubik+Bubbles&family=Sigmar+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div id="aboutPopup" class="popup-overlay">
+    <div class="popup-box">
+      <div class="popup-inner">
+        <h2 class="popup-title">About us</h2>
+        <p class ="popup-desc">
+          Beautiful and passionate souls converge to create Kitty Fitness - 
+          a space where technology meets emotion, radiating the energy of love and warmth 💖
+        </p>
+
+        <ul class="popup-members">
+          <li>11245870 – Nguyễn Khánh Duy</li>
+          <li>11245886 – Trần Thị Nhật Khánh</li>
+          <li>11245840 – Vũ Đức Anh</li>
+          <li>11245892 – Lê Phạm Khánh Linh</li>
+          <li>11245921 – Hoàng Thục Nhi</li>
+          <li>11245899 – Vũ Trần Cát Linh</li>
+        </ul>
+        
+        <img class="kitty-left" src="{% static 'tracker/images/pop-up1.png' %}">
+        <img class="kitty-right" src="{% static 'tracker/images/pop-up2.png' %}">
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src= {% static 'tracker/images/gif3.gif' %} alt="Kitty Logo">
+      <h1>Kitty Fitness</h1>
+    </div>
+    <nav>
+      <div class="dropdown">
+        <a href="#" class="features-btn">Features ▾</a>
+        <div class="dropdown-content">
+            <a href="{% url 'weekly_plan_generator' %}">Weekly Workout Plan</a>
+            <a href="{% url 'goal_translator' %}">Goal-to-Workout</a>
+            <a href="{% url 'class_picker' %}">Workout Class Finder</a>
+            <a href="{% url 'what_if_coach' %}">What-If Fitness Coach</a>
+            <a href="{% url 'calorie_swap' %}">Calorie Burn Swap</a>
+            <a href="{% url 'meal_suggest' %}">Smart Meal Suggestion</a>
+        </div>
+      </div>
+      <a href="#" id="aboutBtn">About us</a>
+    </nav>
+  </header>
+
+
+
+  <!-- Hero Section (nền hồng đậm + Kitty + chữ) -->
+  
+  <section class="hero">
+    <div class="left">
+      <div class="circle-text">
+        <svg viewBox="0 0 400 400">
+          <defs>
+            <path id="textcircle"
+                  d="M180,200 m-160,0 a160,160 0 1,1 330,0 a160,160 0 1,1 -320,0" />
+          </defs>
+          <text font-size="50" fill="#c24b6e" font-family="'Rubik Bubbles', cursive">
+            <textPath href="#textcircle" startOffset="50%" text-anchor="middle">
+              KITTY FITNESS
+            </textPath>
+          </text>
+        </svg>
+      </div>
+      <img src="{% static 'tracker/images/main_views_1.png' %}" alt="Hello Kitty" class="kitty-img">
+    </div>
+
+    <div class="right">
+      <h1 class="title">SET GOALS - TRAIN HARD - SHINE BRIGHT</h1>
+      <h2 class="quote">Daily progress, destination reached with Kitty</h2>
+      <p class="desc">
+        Every workout is a small step toward a healthier, more
+        beautiful, and happier version of yourself.
+        Hello Kitty is always here to be your companion on that journey
+        —encouraging your daily perseverance, and spreading positive energy 
+        and self-love"
+      </p>
+    </div>
+  </section>
+
+  <div class="wave"></div>
+
+
+
+
+
+<!-- 💖 FORM KHẢO SÁT -->
+  <section class="survey-section">
+    <div class="survey-card">
+      <h2>PHYSICAL ACTIVITY SURVEY</h2>
+      <p>Please share some basic information so Hello Kitty can better understand your health and fitness habits!</p>
+
+      <form id="surveyForm" method="POST">
+          {% csrf_token %}
+
+          <div class="form-row">
+            <label>Age:</label>
+            <input type="number" name="age" value="{{ profile.age|default:'' }}" required>
+          </div>
+
+          <div class="form-row">
+            <label>Gender:</label>
+            <select name="sex" required>
+              <option value="Male" {% if profile.sex == 'Male' %}selected{% endif %}>Female</option>
+              <option value="Female" {% if profile.sex == 'Female' %}selected{% endif %}>Male</option>
+              <option value="Other" {% if profile.sex == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label>Height (cm):</label>
+            <input type="number" name="height" value="{{ profile.height|default:'' }}" required>
+          </div>
+
+          <div class="form-row">
+            <label>Weight (kg):</label>
+            <input type="number" name="weight" value="{{ profile.weight|default:'' }}" required>
+          </div>
+
+          <div class="form-row">
+            <label>Average heart rate (bpm):</label>
+            <input type="number" name="heart_rate" value="{{ profile.heart_rate|default:'' }}" required>
+          </div>
+
+          <div class="form-row">
+            <label>Body tempaerature (°C):</label>
+            <input type="number" name="body_temp" value="{{ profile.body_temp|default:'' }}" required>
+          </div>
+
+          <button type="submit">Submit survey</button>
+      </form>
+
+      <p id="surveyMessage" class="survey-success-msg" style="display:none; opacity: 0;">
+        💖 Thank you for providing us with your personal health information
+      </p>
+    
+    </div>
+  </section>
+
+<!--🌸 SECTION TÍNH NĂNG KITTY FITNESS-->
+
+<section class="features-section">
+  <!--hàng 1-->
+  <div class="features-row row-1">
+    <a class="feature-card" href="{% url 'weekly_plan_generator' %}">
+      <img src="{% static 'tracker/images/card1.png' %}" alt="Kitty 1">
+      <h3>CALORIE-TARGETED TRAINING PLAN</h3>
+      <p>Hello Kitty will help craft the perfect weekly workout plan that 
+         is both challenging and full of positive energy. <br>
+        🍓“Plan smart – Train happy – Shine every day!”</p>
+    </a>
+
+    <a class="feature-card" href="{% url 'goal_translator' %}">
+      <img src="{% static 'tracker/images/card2.png' %}" alt="Kitty 2">
+      <h3>TURN GOALS INTO ACTION</h3>
+      <p>
+        Ready to shed pounds or build muscle mass?<br>
+        Kitty will calculate and suggest the perfect plan for you <br>
+        🌼“Dream it – Do it – Kitty got you!”
+      </p>
+    </a>
+
+    <a class="feature-card" href="{% url 'class_picker' %}">
+      <img src="{% static 'tracker/images/card3.png' %}" alt="Kitty 3">
+      <h3>DISCOVER YOUR WORKOUT STYLE</h3>
+      <p>
+        Let Kitty help you find your perfect class—be it sports, art-based, 
+        or outdoors? Every session is a brand-new experience!<br>
+        🌸 “Find your vibe - Move your way"
+      </p>
+    </a>
+  </div>
+  <!--hàng 2-->
+  <div class="features-row row-2">
+    <a class="feature-card" href="{% url 'what_if_coach' %}">
+      <img src="{% static 'tracker/images/card4.png' %}" alt="Kitty 4">
+      <h3>KITTY VIRTUAL TRAINER</h3>
+      <p>
+        Enter your details to instantly view your predicted calorie burn. 
+        Then, explore 'What if I train for 10 more minutes?' scenarios with 
+        Kitty!<br>
+        💫 “Experiment - Explore - Excel with Kitty!""
+      </p>
+    </a>
+
+    <a class="feature-card" href="{% url 'calorie_swap' %}">
+      <img src="{% static 'tracker/images/card5.png' %}" alt="Kitty 5">
+      <h3>BALANCE NUTRITION AND EXERCISE</h3>
+      <p>
+        Just had a slice of cake? Kitty will instantly calculate the 
+        equivalent workout to 'burn off' that energy!<br>
+        🍓 “Eat sweet - Train neat - Stay fit!”
+      </p>
+    </a>
+
+    <a class="feature-card" href="{% url 'meal_suggest' %}">
+      <img src="{% static 'tracker/images/card6.png' %}" alt="Kitty Meal">
+      <h3>SMART MEAL SUGGESTION</h3>
+      <p>
+        Tell Kitty one ingredient — and she’ll create delicious, balanced 
+        meal ideas just for you! From calories to cooking steps, everything 
+        is neatly prepared and ready to explore.<br>
+        🍒 “One ingredient – Endless tasty possibilities!”
+      </p>
+    </a>
+  </div>
+</section>
+
+
+<script>
+  const aboutBtn = document.getElementById("aboutBtn");
+  const aboutPopup = document.getElementById("aboutPopup");
+  const popupBox = document.querySelector(".popup-box");
+
+  // mở popup
+  aboutBtn.addEventListener("click", () => {
+      aboutPopup.style.display = "flex";
+  });
+
+  // click ngoài popup để tắt
+  aboutPopup.addEventListener("click", (e) => {
+      if (!popupBox.contains(e.target)) {
+          aboutPopup.style.display = "none";
+      }
+  });
+</script>
+
+<script>
+document.getElementById("surveyForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const response = await fetch("/api/save-survey/", {
+        method: "POST",
+        body: formData,
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+    });
+
+    const result = await response.json();
+    if (result.status === "success") {
+      const msg = document.getElementById("surveyMessage");
+      msg.style.display = "block";
+      msg.style.opacity=0; 
+
+      setTimeout(() => {
+            msg.style.transition = "opacity 0.6s";
+            msg.style.opacity = 1;
+        }, 30);
+    }
+});
+</script>
+
+
+</body>
+</html>

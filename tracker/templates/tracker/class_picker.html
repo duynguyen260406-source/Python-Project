@@ -1,0 +1,280 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>🌸 Hello Kitty Fitness 🌸</title>
+    <link rel="stylesheet" href="{% static 'tracker/css/class_picker.css' %}">
+    <!--font Modak and DynaPuff-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=DynaPuff:wght@400..700&family=Maven+Pro:wght@400..900&family=Modak&family=Rubik+Bubbles&family=Sigmar+One&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const limit = 3;
+            const boxes = document.querySelectorAll(".activity-checkbox");
+            const msg = document.getElementById("activityLimitMsg");
+
+            boxes.forEach(cb => {
+                cb.addEventListener("change", () => {
+                    const checked = document.querySelectorAll(".activity-checkbox:checked").length;
+
+                    if (checked > limit) {
+                        cb.checked = false;
+                        msg.textContent = "🌸 You can select up to 3 activity groups!";
+                    } else {
+                        msg.textContent = "";
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === name + "=") {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie("csrftoken");
+    </script>
+
+
+    <div id="aboutPopup" class="popup-overlay">
+        <div class="popup-box">
+            <div class="popup-inner">
+                <h2 class="popup-title">About us</h2>
+                <p class="popup-desc">
+                    Beautiful and passionate souls converge to create Kitty Fitness -
+                    a space where technology meets emotion, radiating the energy of love and warmth 💖
+                </p>
+
+                <ul class="popup-members">
+                    <li>11245870 – Nguyễn Khánh Duy</li>
+                    <li>11245886 – Trần Thị Nhật Khánh</li>
+                    <li>11245840 – Vũ Đức Anh</li>
+                    <li>11245892 – Lê Phạm Khánh Linh</li>
+                    <li>11245921 – Hoàng Thục Nhi</li>
+                    <li>11245899 – Vũ Trần Cát Linh</li>
+                </ul>
+
+                <img class="kitty-left" src="{% static 'tracker/images/pop-up1.png' %}">
+                <img class="kitty-right" src="{% static 'tracker/images/pop-up2.png' %}">
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src={% static 'tracker/images/gif3.gif' %} alt="Kitty Logo">
+            <h1>Kitty Fitness</h1>
+        </div>
+        <nav>
+            <div class="dropdown">
+                <a href="#" class="features-btn">Features ▾</a>
+                <div class="dropdown-content">
+                    <a href="{% url 'weekly_plan_generator' %}">Weekly Workout Plan</a>
+                    <a href="{% url 'goal_translator' %}">Goal-to-Workout</a>
+                    <a href="{% url 'class_picker' %}">Workout Class Finder</a>
+                    <a href="{% url 'what_if_coach' %}">What-If Fitness Coach</a>
+                    <a href="{% url 'calorie_swap' %}">Calorie Burn Swap</a>
+                    <a href="{% url 'meal_suggest' %}">Smart Meal Suggestion</a>
+                </div>
+            </div>
+            <a href="#" id="aboutBtn">About us</a>
+        </nav>
+    </header>
+
+
+
+    <!--Sửa ở đây-->
+    <div class="plan-main-content">
+        <h1 class="main-title">🤸‍♂️ Pick a class type and build your workout plan 🏋️‍♀️</h1>
+
+        <form class="plan-generator-form" id="planForm">
+
+            <div class="plan-section">
+                <h2 class="section-title">🏃 Priority Activity Group</h2>
+                <div class="input-group">
+                    <label>Select your focus activity group (max 3):</label>
+
+                    <div class="activity-selector">
+
+                        <label for="outdoor" class="icon-label">
+                            <input type="checkbox" id="outdoor" class="activity-checkbox" value="Outdoor">
+                            <span class="activity-icon fas fa-mountain"></span>
+                            <span>🏝 Outdoor</span>
+                        </label>
+
+                        <label for="art" class="icon-label">
+                            <input type="checkbox" id="art" class="activity-checkbox" value="Art">
+                            <span class="activity-icon fas fa-masks-theater"></span>
+                            <span>💃 Art</span>
+                        </label>
+
+                        <label for="indoor" class="icon-label">
+                            <input type="checkbox" id="indoor" class="activity-checkbox" value="Indoor">
+                            <span class="activity-icon fas fa-house-chimney"></span>
+                            <span>🏡 Indoor</span>
+                        </label>
+
+                        <label for="resistance" class="icon-label">
+                            <input type="checkbox" id="resistance" class="activity-checkbox" value="Resistance">
+                            <span class="activity-icon fas fa-weight-hanging"></span>
+                            <span>🏋️ Resistance Training</span>
+                        </label>
+
+                        <label for="sport" class="icon-label">
+                            <input type="checkbox" id="sport" class="activity-checkbox" value="Sports">
+                            <span class="activity-icon fas fa-basketball-ball"></span>
+                            <span>🏀 Sports</span>
+                        </label>
+
+                    </div>
+
+                    <p id="activityLimitMsg" class="warning-msg"></p>
+                </div>
+            </div>
+
+
+            <div class="plan-section">
+                <h2 class="section-title">🗓 Workout Frequency & Duration</h2>
+
+                <div class="input-group">
+                    <label>Training days of the week:</label>
+                    <div class="day-selector">
+                        <input type="checkbox" id="mon" name="days" value="Monday"><label for="mon">Monday</label>
+                        <input type="checkbox" id="tues" name="days" value="Tuesday"><label for="tues">Tuesday</label>
+                        <input type="checkbox" id="wed" name="days" value="Wednesday"><label for="wed">Wednesday</label>
+                        <input type="checkbox" id="thu" name="days" value="Thursday"><label for="thu">Thursday</label>
+                        <input type="checkbox" id="fri" name="days" value="Friday"><label for="fri">Friday</label>
+                        <input type="checkbox" id="sat" name="days" value="Saturday"><label for="sat">Saturday</label>
+                        <input type="checkbox" id="sun" name="days" value="Sunday"><label for="sun">Sunday</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-section target-section">
+                <h2 class="section-title">🔥 Weekly Target for Calorie Burn</h2>
+                <div class="slider-group">
+                    <label for="weekly_target">Total weekly calorie burn target (kcal):</label>
+                    <div class="slider-display">
+                        <span id="targetValue">1500 kcal</span>
+                        <input type="range" id="weekly_target" name="weekly_target" min="500" max="10000" value="1500"
+                            step="10">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="generate-btn" id="generateBtn">
+                GENERATE NOW
+            </button>
+
+        </form>
+
+        <div class="popup-overlay" id="planPopup">
+            <div class="plan-box">
+                <h2 class="schedule-title">📅 PERSONAL WORKOUT PLAN</h2>
+                <div id="planDetails" class="plan-table-container">
+                </div>
+
+                <button type="button" class="close-plan-btn" onclick="closePopup()">Close & Continue</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const aboutBtn = document.getElementById("aboutBtn");
+        const aboutPopup = document.getElementById("aboutPopup");
+        const popupBox = document.querySelector(".popup-box");
+
+        // mở popup
+        aboutBtn.addEventListener("click", () => {
+            aboutPopup.style.display = "flex";
+        });
+
+        // click ngoài popup để tắt
+        aboutPopup.addEventListener("click", (e) => {
+            if (!popupBox.contains(e.target)) {
+                aboutPopup.style.display = "none";
+            }
+        });
+    </script>
+
+    <script>
+        const weeklyTargetSlider = document.getElementById('weekly_target');
+        const targetValueDisplay = document.getElementById('targetValue');
+        const planForm = document.getElementById('planForm');
+        const planPopup = document.getElementById('planPopup');
+        const planDetails = document.getElementById('planDetails');
+
+        // Cập nhật slider
+        targetValueDisplay.textContent = `${weeklyTargetSlider.value} kcal`;
+        weeklyTargetSlider.addEventListener('input', () => {
+            targetValueDisplay.textContent = `${weeklyTargetSlider.value} kcal`;
+        });
+
+        // Submit form
+        planForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const selectedDays = Array.from(
+                document.querySelectorAll('input[name="days"]:checked')
+            ).map(cb => cb.value);
+
+            const selectedActivities = Array.from(
+                document.querySelectorAll(".activity-checkbox:checked")
+            ).map(c => c.value);
+
+            const weeklyTarget = document.getElementById('weekly_target').value;
+
+            const payload = {
+                days: selectedDays,
+                activities: selectedActivities,
+                weekly_target: weeklyTarget,
+                weight: 60
+            };
+
+            fetch("/api/class-picker/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    planDetails.innerHTML = data.table || `<p style="color:red">${data.error}</p>`;
+                    planPopup.classList.add("show");
+                });
+        });
+
+        // Close popup
+        function closePopup() {
+            planPopup.classList.remove('show');
+        }
+    </script>
+
+
+</body>
+
+</html>

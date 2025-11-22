@@ -1,0 +1,571 @@
+/*-------font Modak and DynaPuff-------*/
+.modak-regular {
+  font-family: "Modak", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.dynapuff {
+  font-family: "DynaPuff", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+.sigmar {
+  font-family: "Sigmar One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.rubik-bubbles-regular {
+  font-family: "Rubik Bubbles", system-ui;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.maven-pro {
+  font-family: "Maven Pro", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.alfa-slab-one-regular {
+  font-family: "Alfa Slab One", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+/*-------font Modak and DynaPuff-------*/
+
+body {
+  margin: 0;
+  font-family: "Maven Pro", sans-serif;
+  background-color: #ffd6eb;
+  color: #7a1c48;
+  overflow: auto;
+  padding-bottom: 250px;
+}
+
+/* --------Header-------------- */
+header {
+  background-color: #d85a8d;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  
+  position: fixed; 
+  top: 0; 
+  width: 100%; 
+  z-index: 9999; 
+}
+
+header .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+}
+
+header .logo img {
+  width: 60px;
+  height: 60px;
+}
+
+header h1 {
+  font-family: "Sigmar One", sans-serif;
+  font-size: 1.7rem;
+  letter-spacing: 1px;
+  font-weight: 1;
+  top: 3px; 
+  margin: 0; 
+  line-height: 1;
+  position: relative;   
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;  /* đẩy về phía phải */
+    gap: 60px;                  /* khoảng cách giữa Features và About us */
+    margin-right: 135px; 
+}
+
+nav a {
+ font-family: "Maven Pro", sans-serif;
+ color: white;
+ margin-left: 10px;
+ text-decoration: none;
+ font-weight: 500;
+ transition: opacity 0.3s;
+ letter-spacing: 4px; 
+}
+
+nav a:hover {
+ opacity: 0.8;
+}
+
+
+nav a#aboutBtn {
+ margin-left: 0;
+}
+
+/* --------Header-------------- */
+
+/* ------ Viền gợn sóng dưới header---------- */
+body {
+  margin: 0;
+  background-color: #ffd6eb;
+  font-family: "Maven Pro", sans-serif;
+}
+
+/* Header */
+header {
+  background-color: #d85a8d;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  width: 60px;
+  height: 60px;
+}
+/* -------------------- POPUP ABOUT US -------------------- */
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup-box {
+    background: #f4a7cd;
+    backdrop-filter: blur(6px);
+    width: 75%;
+    max-width: 800px;
+    border-radius: 35px;
+    padding: 40px 20px;
+    position: relative;
+    animation: popupFade 0.3s ease-out;
+    border: 4px solid #d85a8d;
+    transition: box-shadow 0.4s ease-in-out, 
+                transform 0.2s ease-in-out; 
+}
+
+.popup-inner {
+    text-align: center;
+    color: #7a1c48;
+    font-family: "Maven Pro", sans-serif;
+}
+
+.popup-title {
+    font-family: "Sigmar One", sans-serif;
+    font-size: 45px;
+    margin: 0 0 10px 0;
+    color: #7a1c48;
+}
+
+.popup-desc {
+    font-size: 20px;
+    margin: 10px 0 25px 0;
+    padding: 0 30px;
+}
+
+.popup-members {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.popup-members li {
+    margin: 8px 0;
+}
+
+.kitty-left {
+    position: absolute;
+    left: 25px;
+    bottom: 25px;
+    width: 140px;
+}
+
+.kitty-right {
+    position: absolute;
+    right: 25px;
+    bottom: 25px;
+    width: 140px;
+}
+
+/* --- DROPDOWN MENU FOR FEATURES --- */
+.dropdown {
+   position: relative;
+   display: inline-block;
+}
+
+
+.features-btn {
+   color: white;
+   text-decoration: none;
+   font-family: "Maven Pro", sans-serif;
+   font-weight: 500;
+   cursor: pointer;
+}
+
+
+.dropdown-content {
+   min-width: max-content;
+   width: auto;
+   left: 50%;
+   transform: translateX(-50%);
+    display: none;
+   position: absolute;
+   background-color: #fce0ef;
+   min-width: 260px;
+   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+   z-index: 99999;
+   border-radius: 12px;
+
+
+   padding: 10px 0;          /* thêm khoảng trên/dưới */
+   text-align: center !important;   
+}
+
+
+.dropdown-content a {
+   color: #7a1c48;
+   text-decoration: none;
+   display: block;
+   font-family: "Maven Pro", sans-serif;
+   font-size: 1rem;
+
+
+   padding: 10px 20px;        /* dãn dòng */
+   line-height: 1.4;          /* tăng chiều cao dòng */
+   letter-spacing: 0.5px;
+   text-align: center !important;
+}
+
+
+.dropdown-content a:hover {
+   background-color: #ffd6eb;
+}
+
+
+.dropdown:hover .dropdown-content {
+   display: block;
+}
+
+
+.dropdown:hover .features-btn {
+   opacity: 0.8;
+}
+/* --- DROPDOWN MENU FOR FEATURES --- */
+
+
+/* ================== WEEKLY PLAN GENERATOR CSS ================== */
+.main-wrapper {
+    width: 90%;
+    max-width: 1200px;
+    margin: 150px auto 60px;
+    background: #ffe3f1;
+    border: 4px solid #d66291;
+    border-radius: 35px;
+    padding: 30px 40px 60px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.container {
+  width: 80%; 
+  max-width: 900px; 
+  margin: 0 auto; 
+  padding: 40px 20px;  
+}
+.section-title {
+  font-family: "Alfa Slab One", serif;
+  font-size: 3rem;
+  color: #943055;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+  margin-top: 10px;
+  padding-bottom: 20px;
+  position: relative;
+  text-align: center;
+}
+
+.section-title::before {
+font-size: 28px;
+}
+
+.section-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    border-radius: 4px;
+    background: #c2436b;   
+}
+
+/* INPUT ROW */
+.input-row {
+display: flex;
+align-items: center;
+gap: 0;
+margin-bottom: 25px;
+}
+
+
+.input-row label,
+.container > label,
+#intensitySection > label {
+    width: 300px;
+    font-size: 23px;
+    font-weight: 100;
+    font-family: "Maven Pro", sans-serif;
+    color: #7a1c48;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+    text-align: left;
+    margin-right: 20px;
+}
+
+
+.input-row input,
+.input-row select {
+  width: 600px;
+  height: 48px; 
+  padding: 0 18px;
+  background: #f187ac;
+  border-radius: 25px;
+  font-size: 18px;
+  border: none; 
+  outline: none; 
+  font-family: "Maven Pro", sans-serif;
+
+  box-sizing: border-box;
+  appearance: none; 
+  color: white; 
+}
+
+#inputCalories::placeholder, 
+#inputHours::placeholder {
+  color:#ffe5ecb9; 
+}
+
+#splitMode:invalid {
+    color: #ffe5ecb9 !important;  /* màu nhạt giống placeholder input */
+}
+
+#splitMode option[disabled][hidden]{
+  color:#ffe5ecb9;
+}
+
+/* Ô CHỌN NGÀY dạng pill */
+.day-buttons,
+.intensity-buttons {
+  width: 600px; 
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));  
+  gap: 12px; 
+  justify-content: flex-start;
+}
+
+.day-row {
+  align-items: flex-start;  
+}
+
+.day-btn {
+  width: 101px; 
+  text-align: center;
+  color: white; 
+  padding: 10px 16px;
+  border-radius: 25px;
+  background: #f187ac;
+  cursor: pointer;
+  transition: 0.2s;
+  border: 2px solid transparent;
+}
+
+.day-btn.active-day {
+  background: #ff99cc;
+  color: white;
+  border-color: #ff4da6;
+  font-weight: 700;
+}
+
+
+.day-btn:hover {
+background: #ff78ba;
+transform: scale(1.05);
+}
+
+
+/* NÚT TẠO NGAY */
+.create-btn {
+display: block;
+margin: 35px auto 0;
+padding: 15px 55px;
+font-size: 22px;
+font-family: "Maven Pro", sans-serif;
+font-weight: 800;
+background: #d45a86;
+color: #ffe5ec;
+border: none;
+border-radius: 28px;
+cursor: pointer;
+transition: 0.25s;
+box-shadow: 0 5px 0 #8d3550;
+}
+
+
+.create-btn:hover {
+background: #b2476f;
+transform: translateY(-3px);
+}
+
+.create-line-bottom {
+    width: 100%;
+    max-width: 900px;
+    height: 4px;
+    background: #c2436b;
+    border-radius: 4px;
+    margin: 25px 0 40px;   /* cách nút một chút cho đẹp */
+}
+
+.table-title {
+  font-family: "Alfa Slab One", serif;
+  font-size: 30px;
+  color: #943055;
+  align-items: center;
+  gap: 10px;
+  display: block; 
+  text-align: center;
+  margin-top: 10px; 
+}
+
+
+
+/* BẢNG KẾ HOẠCH 7 NGÀY */
+table {
+width: 1200px;
+margin: 45px auto;  
+border-collapse: separate;
+border-spacing: 12px 10px;
+margin-top: -5px;
+}
+
+table tr:hover td {
+  background: #ffb6d9;  
+  transform: scale(1.01);
+  transition: 0.25s ease-in-out;
+  cursor: pointer;
+}
+
+table tr:hover {
+  transform: scale(1.03);
+  transform-origin: center;
+  transition: 0.25s ease-in-out;
+}
+
+th {
+background: #d3457b;
+color: white;
+font-size: 17px;
+padding: 15px;
+border-radius: 20px;
+font-family: "Maven Pro", sans-serif;
+font-weight: 600;
+}
+
+
+td {
+background: #f8d1e2;
+padding: 14px;
+border-radius: 18px;
+border: 2px solid #d489a7;
+text-align: center;
+font-size: 16px;
+}
+
+.plan-note {
+  width: 900px; 
+  margin: -10px auto 0; 
+  background: #fadde9;
+  padding: 20px 30px;
+  border-radius: 18px;
+  border: 2px dashed #c85a87;
+  color: #7a1c48;
+  font-size: 16px;
+  line-height: 1.6;
+  transition: 0.3s ease-in-out;
+}
+
+.plan-note strong {
+    color: #90315a;
+}
+
+.plan-note ul {
+    margin: 10px 0 0 0;
+    padding-left: 20px;
+}
+
+.plan-note li {
+    margin-bottom: 6px;
+}
+
+.plan-note:hover {
+    transform: scale(1.015);
+    background: #ffcde4;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    border-color: #d13f7b;
+}
+@keyframes kittyShake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-2px); }
+    100% { transform: translateX(0); }
+}
+
+.reload-btn {
+  display: block;
+  margin: 35px auto 0;
+  padding: 15px 55px;
+  font-size: 22px;
+  font-family: "Maven Pro", sans-serif;
+  font-weight: 800;
+  background: #d45a86;
+  color: #ffe5ec;
+  border: none;
+  border-radius: 28px;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 5px 0 #8d3550;
+}
+
+.reload-btn:hover {
+    background: #cc5787;
+    transform: translateY(-3px);
+}

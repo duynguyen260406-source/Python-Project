@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌸 Hello Kitty Fitness 🌸</title>
+
+  <!-- Font Modak and DynaPuff -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=DynaPuff:wght@400..700&family=Maven+Pro:wght@400..900&family=Modak&family=Rubik+Bubbles&family=Sigmar+One&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'tracker/css/meal_suggest.css' %}">
+</head>
+<body>
+
+  <!-- POPUP ABOUT US -->
+  <div id="aboutPopup" class="popup-overlay">
+    <div class="popup-box">
+      <div class="popup-inner">
+        <h2 class="popup-title">About us</h2>
+        <p class ="popup-desc">
+          Những tâm hồn xinh xắn nhiệt huyết cùng nhau tạo nên Kitty Fitness – 
+          nơi công nghệ chạm đến cảm xúc và lan tỏa năng lượng yêu thương 💖
+        </p>
+
+        <ul class="popup-members">
+          <li>11245870 – Nguyễn Khánh Duy</li>
+          <li>11245886 – Trần Thị Nhật Khánh</li>
+          <li>11245840 – Vũ Đức Anh</li>
+          <li>11245892 – Lê Phạm Khánh Linh</li>
+          <li>11245921 – Hoàng Thục Nhi</li>
+          <li>11245899 – Vũ Trần Cát Linh</li>
+        </ul>
+        
+        <img class="kitty-left" src="{% static 'tracker/images/pop-up1.png' %}" onerror="this.style.display='none'">
+        <img class="kitty-right" src="{% static 'tracker/images/pop-up2.png' %}" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src="{% static 'tracker/images/gif3.gif' %}" alt="Kitty Logo" onerror="this.style.display='none'">
+      <h1>Kitty Fitness</h1>
+    </div>
+    <nav>
+      <div class="dropdown">
+        <a href="#" class="features-btn">Features ▾</a>
+        <div class="dropdown-content">
+            <a href="{% url 'weekly_plan_generator' %}">Weekly Workout Plan</a>
+            <a href="{% url 'goal_translator' %}">Goal-to-Workout</a>
+            <a href="{% url 'class_picker' %}">Workout Class Finder</a>
+            <a href="{% url 'what_if_coach' %}">What-If Fitness Coach</a>
+            <a href="{% url 'calorie_swap' %}">Calorie Burn Swap</a>
+            <a href="{% url 'meal_suggest' %}">Smart Meal Suggestion</a>
+        </div>
+      </div>
+      <a href="#" id="aboutBtn">About us</a>
+    </nav>
+  </header>
+
+  <!-- MEAL SUGGEST SECTION -->
+  <main class="meal-suggest-container">
+    <div class="meal-suggest-border-box">
+      <h2 class="main-title">🍔 Meal Suggest 🍟</h2>
+      <p class="meal-description maven-pro">
+        You don't know what to have for a meal today? Don't worry! Let me know one ingredient. I'll suggest you some very good meals from that
+      </p>
+      <hr class="title-divider">
+
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+        <input type="text" class="search-input" placeholder="I want a meal with chicken and corn...">
+      </div>
+
+      <table class="meal-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Calories</th>
+            <th>Steps</th>
+            <th>Ingredients</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      const input = document.querySelector(".search-input");
+
+      input.addEventListener("keydown", async function(e) {
+          if (e.key === "Enter") {
+              e.preventDefault();
+
+              const query = input.value;
+
+              const payload = new FormData();
+              payload.append("query", query);
+
+              const response = await fetch("/api/meal-suggest/", {
+                  method: "POST",
+                  body: payload
+              });
+
+              const data = await response.json();
+
+              if (!data.results) return;
+
+              updateTable(data.results);
+          }
+      });
+  });
+
+
+  function updateTable(results) {
+      const table = document.querySelector(".meal-table");
+      const tbody = document.querySelector(".meal-table tbody");
+      tbody.innerHTML = "";  // clear table
+
+      results.forEach(item => {
+          tbody.innerHTML += `
+          <tr>
+              <td>${item.name}</td>
+              <td>${item.calories}</td>
+              <td>
+                  <button class="show-btn" data-target="steps">Show steps</button>
+                  <div class="steps-detail">${item.steps}</div>
+              </td>
+              <td>
+                  <button class="show-btn ingredients-btn" data-target="ingredients">Show ingredients</button>
+                  <div class="ingredients-detail">${item.ingredients}</div>
+              </td>
+          </tr>
+          `;
+      });
+
+      table.style.display = "table";
+
+      attachToggleEvents();
+  }
+
+  function attachToggleEvents() {
+      document.querySelectorAll(".show-btn").forEach(button => {
+          button.addEventListener("click", () => {
+              const box = button.nextElementSibling;
+              const isOpen = box.style.display === "block";
+              box.style.display = isOpen ? "none" : "block";
+
+              button.textContent =
+                  button.getAttribute("data-target") === "steps"
+                      ? (isOpen ? "Show steps" : "Hide steps")
+                      : (isOpen ? "Show ingredients" : "Hide ingredients");
+          });
+      });
+  }
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const aboutBtn = document.getElementById("aboutBtn");
+        const aboutPopup = document.getElementById("aboutPopup");
+        const popupBox = document.querySelector(".popup-box");
+        const showDetailButtons = document.querySelectorAll(".show-btn");
+
+        if (aboutBtn && aboutPopup) {
+            aboutBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                aboutPopup.style.display = "flex";
+            });
+
+            aboutPopup.addEventListener("click", (e) => {
+                if (popupBox && !popupBox.contains(e.target)) {
+                    aboutPopup.style.display = "none";
+                }
+            });
+        }
+
+        showDetailButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const detailDiv = button.nextElementSibling;
+                
+                if (detailDiv) {
+                    if (detailDiv.style.display === 'block' || detailDiv.style.display === '') {
+                        detailDiv.style.display = 'none';
+                        button.textContent = button.getAttribute('data-target') === 'steps' ? 'Show steps' : 'Show ingredients';
+                        button.classList.remove('active-btn');
+                    } else {
+                        detailDiv.style.display = 'block';
+                        button.textContent = button.getAttribute('data-target') === 'steps' ? 'Hide steps' : 'Hide ingredients';
+                        button.classList.add('active-btn');
+                    }
+                }
+            });
+        });
+    });
+  </script>
+
+</body>
+</html>
