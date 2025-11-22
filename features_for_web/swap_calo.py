@@ -1,5 +1,7 @@
 import pandas as pd
 import joblib
+from download_data import ensure_files
+ensure_files()
 
 MODEL_PATH = "artifacts/best_calorie_model.pkl"
 model = joblib.load(MODEL_PATH)
