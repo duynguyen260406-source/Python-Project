@@ -166,37 +166,42 @@ Django backend cung cấp nhiều API endpoint phục vụ các tính năng ML.
 > Meal Suggest, What-if Coach, Swap Calories dùng workflow tương tự.
 ### d. Tích hợp mô hình ML vào Django
 
-ML model được load trong `api.py`.
+Tất cả ML model được load sẵn ở backend trong `api.py`.
 
 ```python
 import joblib
 calories_model = joblib.load("models/calories_predictor.pkl")
 Quy trình chung của mỗi API ML:
-- Nhận dữ liệu từ frontend
-- Xử lý dữ liệu (chuẩn hoá, scale…)
-- Dự đoán bằng ML model
-- Trả về JSON để hiển thị
+
+Nhận dữ liệu từ frontend
+
+Xử lý dữ liệu (chuẩn hoá, scale…)
+
+Dự đoán bằng ML model
+
+Trả về JSON để hiển thị
 ---
 
 ```md
 ### e. Giao diện (Frontend)
 
 **Thư mục:**
+
 tracker/templates/tracker/*.html
 tracker/static/tracker/css/
 tracker/static/tracker/js/
+**HTML gồm:**
 
-**HTML:**
 - form nhập thông tin  
 - bảng kết quả  
-- popup  
-- table động  
+- popup giới thiệu nhóm  
+- table động bằng JavaScript  
 
-**JavaScript:** fetch API, tạo bảng kế hoạch, popup, update UI  
-**CSS:** Hello Kitty style, responsive, icon minh hoạ
+**JavaScript gồm:** fetch API, tạo bảng kế hoạch, popup, update UI  
+**CSS:** theme Hello Kitty, responsive, icon minh hoạ
 ### f. Tính năng chọn ngày rảnh (Free-days)
 
-Payload gửi từ frontend:
+Payload từ frontend:
 
 ```json
 {
@@ -208,7 +213,7 @@ Payload gửi từ frontend:
 ```md
 ### g. Ghi chú chân trang
 
-Tất cả trang có **footer chuẩn** gồm:
+Tất cả trang có footer chuẩn gồm:
 
 - Mục tiêu (kcal)  
 - Gợi ý thời lượng  
@@ -217,18 +222,26 @@ Tất cả trang có **footer chuẩn** gồm:
 - Khả thi  
 - Notes  
 
-Có thể tách thành template component.
+Có thể tách thành template component tái sử dụng.
 ### h. Session / User Profile (mở rộng)
 
-Dữ liệu mẫu:
+Hiện dùng dữ liệu mẫu:
+
 age: 25
 sex: male
 height: 170
 weight: 65
+Mở rộng trong tương lai:
 
-Có thể mở rộng:
 - User model  
-- Lưu lịch tập  
-- Dashboard theo dõi tiến độ  
+- Lưu profile & lịch tập  
+- Dashboard tiến độ  
 ### i. Chạy dự án
-Frontend tự gọi API ML → hiển thị ngay.
+
+```bash
+python manage.py runserver
+Frontend tự gọi API ML → hiển thị kết quả ngay.
+---
+
+
+
