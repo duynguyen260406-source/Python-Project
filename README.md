@@ -168,12 +168,9 @@ Django backend cung cấp nhiều API endpoint phục vụ các tính năng ML.
 
 Tất cả ML model được load sẵn ở backend trong `api.py`.
 
-```python
 import joblib
 calories_model = joblib.load("models/calories_predictor.pkl")
----
 
-```md
 Quy trình chung của mỗi API ML:
 
 Nhận dữ liệu từ frontend
