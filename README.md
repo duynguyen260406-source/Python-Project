@@ -171,6 +171,9 @@ Tất cả ML model được load sẵn ở backend trong `api.py`.
 ```python
 import joblib
 calories_model = joblib.load("models/calories_predictor.pkl")
+---
+
+```md
 Quy trình chung của mỗi API ML:
 
 Nhận dữ liệu từ frontend
@@ -180,9 +183,7 @@ Xử lý dữ liệu (chuẩn hoá, scale…)
 Dự đoán bằng ML model
 
 Trả về JSON để hiển thị
----
 
-```md
 ### e. Giao diện (Frontend)
 
 **Thư mục:**
