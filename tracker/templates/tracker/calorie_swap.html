@@ -49,7 +49,7 @@
   });
   </script>
 
-
+  <script>
     // Ẩn dropdown khi click ngoài
     document.addEventListener("click", (e) => {
         if (!foodInput.contains(e.target)) {
@@ -106,8 +106,6 @@
     weight: "{{ profile.weight|default:0 }}",
     heart_rate: "{{ profile.heart_rate|default:0 }}",
     body_temp: "{{ profile.body_temp|default:37 }}",
-    efficiency: "{{ profile.efficiency|default:0 }}",
-    intensity: "{{ profile.intensity|default:0 }}"
   };
   </script>
 
@@ -122,9 +120,14 @@
   <!-- Header -->
   <header>
     <div class="logo">
-      <img src= {% static 'tracker/images/gif3.gif' %} alt="Kitty Logo">
-      <h1>Kitty Fitness</h1>
+      <a href="{% url 'landing_page' %}">
+        <img src="{% static 'tracker/images/gif3.gif' %}" alt="Kitty Logo">
+      </a>
+      <h1>
+        <a href="{% url 'landing_page' %}" class="logo-text">Kitty Fitness</a>
+      </h1>
     </div>
+
     <nav>
       <div class="dropdown">
         <a href="#" class="features-btn">Features ▾</a>
