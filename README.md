@@ -112,8 +112,8 @@ Cài đặt toàn bộ data bằng cách chạy chương trình:
 download_data.py
 ```
 ### 4. Cách chạy chương trình: Phần này hướng dẫn cách chạy web Django của project
-```md
 ### a. Cấu trúc Django
+```md
 kitty_fitness/
 │
 ├── kitty_fitness/ # cấu hình chính
