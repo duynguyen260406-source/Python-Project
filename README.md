@@ -112,6 +112,7 @@ Cài đặt toàn bộ data bằng cách chạy chương trình:
 download_data.py
 ```
 ### 4. Cách chạy chương trình: Phần này hướng dẫn cách chạy web Django của project
+```md
 ### a. Cấu trúc Django
 kitty_fitness/
 │
@@ -128,7 +129,7 @@ kitty_fitness/
 │ └── static/tracker/ # CSS, JS, hình
 │
 └── manage.py
-
+```
 ### Phân tách giao diện và xử lý
 - **views.py** – render HTML (Goal Translator, Weekly Planner…)
 - **api.py** – xử lý logic tính toán, gọi ML model và trả JSON
