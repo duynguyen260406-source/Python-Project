@@ -47,7 +47,10 @@ body {
   color: #7a1c48;
   overflow: auto;
 }
-
+.logo a {
+  text-decoration: none;
+  color: #fdb8d9;
+}
 /* --------Header-------------- */
 header {
   background-color: #d85a8d;
@@ -394,24 +397,27 @@ body {
   flex-wrap: wrap;
 }
 
-.activity-selector input[type="checkbox"] {
-  display: none;
+.icon-label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
 }
 
-.activity-selector input[type="checkbox"]:checked ~ .activity-icon {
-    color: #c2436b;
+/* đổi màu ICON + TEXT */
+.icon-label input[type="radio"]:checked ~ .activity-icon,
+.icon-label input[type="radio"]:checked ~ span {
+  color: #c2436b;
+  font-weight: 700;
 }
 
-.activity-selector input[type="checkbox"]:checked ~ span {
-    color: #c2436b;
-    font-weight: 700;
-}
-
-.icon-label:has(input[type="checkbox"]:checked) {
-    border-color: var(--color-accent);
-    background-color: #ffe8f2;
-    box-shadow: 0 0 10px rgba(255, 71, 133, 0.5);
-    transform: scale(1.05);
+/* highlight cả card khi được chọn */
+.icon-label:has(input[type="radio"]:checked) {
+  border-color: var(--color-accent);
+  background-color: #ffe8f2;
+  box-shadow: 0 0 10px rgba(255, 71, 133, 0.5);
+  transform: scale(1.05);
 }
 
 
@@ -448,14 +454,6 @@ input::placeholder {
   color: var(--color-primary);
   font-family: "Maven Pro", sans-serif;
 }
-
-.activity-selector input[type="radio"]:checked+.icon-label {
-  border-color: var(--color-accent);
-  background-color: #ffe8f2;
-  box-shadow: 0 0 10px rgba(255, 71, 133, 0.5);
-  transform: scale(1.05);
-}
-
 
 /* ------------------ 2. Slider Group (Mục tiêu Calo) ------------------ */
 .slider-group {
@@ -630,6 +628,15 @@ input::placeholder {
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
+
+.kcal-summary {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #c2436b;
+  text-align: center;
+}
+
 
 .weekly-plan-table th,
 .weekly-plan-table td {

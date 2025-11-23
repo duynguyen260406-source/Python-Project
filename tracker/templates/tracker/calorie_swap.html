@@ -173,7 +173,12 @@
                     
                     <div class="form-group">
                         <label for="max_duration">Maximum workout duration (minutes):</label>
-                        <input type="number" id="max_duration" name="max_duration" min="1" max="180" required placeholder="Enter maximum duration per session">
+                        <input type="number" id="max_duration" name="max_duration" min="1" required placeholder="Enter maximum duration per session">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max_heart_rate">Maximum heart rate (bpm):</label>
+                        <input type="number" id="max_heart_rate" name="max_heart_rate" min="{{profile.heart_rate}}" required placeholder="Enter max safe heart rate">
                     </div>
 
                     <button type="submit" id="calculateSwapBtn" class="swap-btn dynapuff">
@@ -210,6 +215,7 @@ document.getElementById("swapAlgorithmForm").addEventListener("submit", async fu
     const foodName = document.getElementById("food_name").value;
     const quantity = Number(document.getElementById("quantity").value);
     const maxDuration = Number(document.getElementById("max_duration").value);
+    const maxHeartRate = Number(document.getElementById("max_heart_rate").value);
 
     const payload = new FormData();
     payload.append("food_name", foodName);
@@ -221,6 +227,7 @@ document.getElementById("swapAlgorithmForm").addEventListener("submit", async fu
     payload.append("heart_rate", userProfile.heart_rate);
     payload.append("body_temp", userProfile.body_temp);
     payload.append("max_min", maxDuration);
+    payload.append("max_heart_rate", maxHeartRate);
 
     const response = await fetch("/api/swap-calorie/", {
         method: "POST",
@@ -237,7 +244,7 @@ document.getElementById("swapAlgorithmForm").addEventListener("submit", async fu
 
     document.getElementById("popupCalories").innerText = `${data.food_kcal} kcal`;
 
-    const bpm = userProfile.heart_rate;
+    const bpm = data.heart_rate;
 
     document.getElementById("popupSummaryText").innerText =
       `To burn ${data.food_kcal} kcal from ${quantity} ${foodName}, you need ${data.required_minutes} minutes at ${bpm} bpm.`;

@@ -116,6 +116,7 @@ def api_swap_calorie (request):
             heart_rate = float(request.POST.get("heart_rate"))
             max_min = float(request.POST.get("max_min"))
             body_temp = float(request.POST.get("body_temp", 37))
+            max_heart_rate = float(request.POST.get("max_heart_rate"))
         except: 
             return JsonResponse({"error": "Invalid input"}, status=400)
 
@@ -124,7 +125,7 @@ def api_swap_calorie (request):
         else:
             sex = "male"
 
-        result = swap_calories(food_name, quantity, age, sex, height, weight, heart_rate, max_min, body_temp)
+        result = swap_calories(food_name, quantity, age, sex, height, weight, heart_rate, max_min, max_heart_rate, body_temp)
         return JsonResponse(result)
     
     return JsonResponse({"error": "POST only"}, status=405)
@@ -133,7 +134,7 @@ def api_food_suggestions(request):
     """Return list of matching foods from CSV"""
     query = request.GET.get("q", "").lower().strip()
     if not query:
-        return JsonResponse({"result": []})
+        return JsonResponse({"results": []})
     
     matches = food_db[food_db["key"].str.contains(query)]
     results = list(matches["Food_Name"].head(10).values)
@@ -221,6 +222,7 @@ def api_generate_plan(request):
                 weight_kg=50,
                 body_temp_c=37.0
             )
+            base_hr = 150
         
 
         df = weekly_plan_generator(
@@ -229,7 +231,7 @@ def api_generate_plan(request):
             weekly_target_kcal=weekly_target,
             days=len(free_days),
             max_minutes_per_day=max_hours * 60,
-            base_hr=150,
+            base_hr=base_hr,
             split_mode=split_mode,
             free_days=free_days,
             peak_day=peak_day,
@@ -432,13 +434,22 @@ def class_picker_api(request):
             weight_kg=weight_kg,
             weekly_target_kcal=weekly_target
         )
+        total_kcal = df["Kcal ước tính"].sum()
+        diff = total_kcal - weekly_target
+
+        summary_text = (
+            f"Total estimated kcal = {total_kcal:.1f} "
+            f"(Target = {weekly_target:.1f}) | Error = {diff:+.1f}"
+        )
+
         html_table = (
             df.to_html(index=False, border=0)
             .replace('style="text-align: right;"', "")
             .replace('style="text-align:right;"', "")
             .replace('class="dataframe"', 'class="weekly-plan-table"')
         )
-        return JsonResponse({"table": html_table})
+        return JsonResponse({"table": html_table, 
+                             "summary": summary_text})
 
     except Exception as e:
         print("❌ CLASS PICKER ERROR:", e)

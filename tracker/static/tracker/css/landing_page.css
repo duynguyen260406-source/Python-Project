@@ -39,7 +39,10 @@ body {
   background-color: #ffd6eb;
   color: #7a1c48;
 }
-
+.logo a {
+  text-decoration: none;
+  color: #fdb8d9;
+}
 /* Header */
 header {
   background-color: #d85a8d;

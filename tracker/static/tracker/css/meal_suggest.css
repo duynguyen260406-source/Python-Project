@@ -52,6 +52,10 @@ body {
   overflow: auto;
   padding-bottom: 250px;
 }
+.logo a {
+  text-decoration: none;
+  color: #fdb8d9;
+}
 
 /* --------Header-------------- */
 header {

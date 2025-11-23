@@ -78,29 +78,35 @@ def solve_duration_for_target(model, target_kcal, age, sex, height_cm, weight_kg
 
     return hi, predict_kcal(model, age, sex, height_cm, weight_kg, hi, base_hr, body_temp_c), True
 
+def solve_hr_for_target(model, target_kcal, age, sex, height_cm, weight_kg,
+                        duration_min, hr_min:float,hr_max: float = 185, body_temp_c: float = 37.0, 
+                        tol: float = 0.5, max_iter: int = 40):
+
+    lo, hi = hr_min, hr_max
+    kcal_hi = predict_kcal(model, age, sex, height_cm, weight_kg, duration_min, hi, body_temp_c)
+    if kcal_hi + tol < target_kcal:
+        return hi, kcal_hi, False
+
+    for _ in range(max_iter):
+        mid = 0.5 * (lo + hi)
+        kcal_mid = predict_kcal(model, age, sex, height_cm, weight_kg, duration_min, mid, body_temp_c)
+        if abs(kcal_mid - target_kcal) <= tol:
+            return mid, kcal_mid, True
+        if kcal_mid < target_kcal:
+            lo = mid
+        else:
+            hi = mid
+    kcal_hi = predict_kcal(model, age, sex, height_cm, weight_kg, duration_min, hi, body_temp_c)
+    return hi, kcal_hi, True
 
 def swap_calories(food_name, quantity,
                   age, sex, height, weight,
-                  base_hr, max_min, body_temp):
-    """
-    INPUT:
-        food_name: tên món ăn (string)
-        quantity: số lượng (int)
-        age, sex, height, weight, base_hr, max_min
-
-    OUTPUT:
-        {
-            "food_name": ...,
-            "quantity": ...,
-            "food_kcal": ...,
-            "required_minutes": ...,
-            "burn_estimate": ...,
-            "feasible": bool
-        }
-    """
-
+                  base_hr, max_min, hr_max, body_temp):
+    
     key = food_name.lower().strip()
     row = food_db.loc[food_db["key"] == key]
+
+    heart_rate = base_hr
 
     if row.empty:
         raise ValueError(f"Food '{food_name}' not found in CSV file.")
@@ -113,11 +119,17 @@ def swap_calories(food_name, quantity,
         model, total_kcal, age, sex, height, weight, base_hr, max_min, body_temp
     )
 
+    if feasible == False:
+        heart_rate, kcal_est, feasible = solve_hr_for_target(
+            model, total_kcal, age, sex, height, weight, dur, base_hr, hr_max= hr_max, body_temp_c = body_temp
+        )
+
     return {
         "food_name": food_name,
         "quantity": quantity,
         "food_kcal": total_kcal,
         "required_minutes": round(dur, 1),
+        "heart_rate": round(heart_rate, 1),
         "burn_estimate": round(kcal_est, 1),
         "feasible": feasible
     }

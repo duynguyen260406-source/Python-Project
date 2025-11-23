@@ -16,28 +16,6 @@
 
 <body>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const limit = 3;
-            const boxes = document.querySelectorAll(".activity-checkbox");
-            const msg = document.getElementById("activityLimitMsg");
-
-            boxes.forEach(cb => {
-                cb.addEventListener("change", () => {
-                    const checked = document.querySelectorAll(".activity-checkbox:checked").length;
-
-                    if (checked > limit) {
-                        cb.checked = false;
-                        msg.textContent = "🌸 You can select up to 3 activity groups!";
-                    } else {
-                        msg.textContent = "";
-                    }
-                });
-            });
-        });
-    </script>
-
-
-    <script>
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== "") {
@@ -82,10 +60,14 @@
 
     <!-- Header -->
     <header>
-        <div class="logo">
-            <img src={% static 'tracker/images/gif3.gif' %} alt="Kitty Logo">
-            <h1>Kitty Fitness</h1>
-        </div>
+    <div class="logo">
+      <a href="{% url 'landing_page' %}">
+        <img src="{% static 'tracker/images/gif3.gif' %}" alt="Kitty Logo">
+      </a>
+      <h1>
+        <a href="{% url 'landing_page' %}" class="logo-text">Kitty Fitness</a>
+      </h1>
+    </div>
         <nav>
             <div class="dropdown">
                 <a href="#" class="features-btn">Features ▾</a>
@@ -118,34 +100,35 @@
                     <div class="activity-selector">
 
                         <label for="outdoor" class="icon-label">
-                            <input type="checkbox" id="outdoor" class="activity-checkbox" value="Outdoor">
+                            <input type="radio" name="activity_group" id="outdoor" class="activity-radio" value="Outdoor">
                             <span class="activity-icon fas fa-mountain"></span>
                             <span>🏝 Outdoor</span>
                         </label>
 
                         <label for="art" class="icon-label">
-                            <input type="checkbox" id="art" class="activity-checkbox" value="Art">
+                            <input type="radio" name="activity_group" id="art" class="activity-radio" value="Art">
                             <span class="activity-icon fas fa-masks-theater"></span>
                             <span>💃 Art</span>
                         </label>
 
                         <label for="indoor" class="icon-label">
-                            <input type="checkbox" id="indoor" class="activity-checkbox" value="Indoor">
+                            <input type="radio" name="activity_group" id="indoor" class="activity-radio" value="Indoor">
                             <span class="activity-icon fas fa-house-chimney"></span>
                             <span>🏡 Indoor</span>
                         </label>
 
                         <label for="resistance" class="icon-label">
-                            <input type="checkbox" id="resistance" class="activity-checkbox" value="Resistance">
+                            <input type="radio" name="activity_group" id="resistance" class="activity-radio" value="Resistance">
                             <span class="activity-icon fas fa-weight-hanging"></span>
                             <span>🏋️ Resistance Training</span>
                         </label>
 
                         <label for="sport" class="icon-label">
-                            <input type="checkbox" id="sport" class="activity-checkbox" value="Sports">
+                            <input type="radio" name="activity_group" id="sport" class="activity-radio" value="Sports">
                             <span class="activity-icon fas fa-basketball-ball"></span>
                             <span>🏀 Sports</span>
                         </label>
+
 
                     </div>
 
@@ -192,9 +175,8 @@
         <div class="popup-overlay" id="planPopup">
             <div class="plan-box">
                 <h2 class="schedule-title">📅 PERSONAL WORKOUT PLAN</h2>
-                <div id="planDetails" class="plan-table-container">
-                </div>
-
+                <div id="planDetails" class="plan-table-container"></div>
+                <p id="kcalSummary" class="kcal-summary"></p>
                 <button type="button" class="close-plan-btn" onclick="closePopup()">Close & Continue</button>
             </div>
         </div>
@@ -240,15 +222,13 @@
                 document.querySelectorAll('input[name="days"]:checked')
             ).map(cb => cb.value);
 
-            const selectedActivities = Array.from(
-                document.querySelectorAll(".activity-checkbox:checked")
-            ).map(c => c.value);
+            const selectedActivity = document.querySelector(".activity-radio:checked")?.value;
 
             const weeklyTarget = document.getElementById('weekly_target').value;
 
             const payload = {
                 days: selectedDays,
-                activities: selectedActivities,
+                activities: [selectedActivity],
                 weekly_target: weeklyTarget,
                 weight: 60
             };
@@ -264,6 +244,7 @@
                 .then(res => res.json())
                 .then(data => {
                     planDetails.innerHTML = data.table || `<p style="color:red">${data.error}</p>`;
+                    document.getElementById("kcalSummary").textContent = data.summary || "";
                     planPopup.classList.add("show");
                 });
         });

@@ -108,6 +108,7 @@ class UserProfile:
     height_cm: float
     weight_kg: float
     body_temp_c: float = 37.0
+    heart_rate_bpm: float = 150.0
 
 #---------------------------------------------
 def distribute_targets(
@@ -192,7 +193,7 @@ def weekly_plan_generator(
                     hr2, kcal2, feas2 = solve_hr_for_target(
                         model, target, profile.age, profile.sex,
                         profile.height_cm, profile.weight_kg,
-                        dur, hr_min=max(90, hr_bounds[0]), hr_max=hr_bounds[1],
+                        dur, hr_min=60, hr_max=220 - profile.age,
                         body_temp_c=profile.body_temp_c
                     )
                     if feas2:
@@ -206,7 +207,7 @@ def weekly_plan_generator(
                     model, target, profile.age, profile.sex,
                     profile.height_cm, profile.weight_kg,
                     duration_min=max_minutes_per_day,
-                    hr_min=hr_bounds[0], hr_max=hr_bounds[1],
+                    hr_min=60, hr_max=220 - profile.age,
                     body_temp_c=profile.body_temp_c
                 )
                 dur = max_minutes_per_day
